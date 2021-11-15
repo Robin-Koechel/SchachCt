@@ -14,7 +14,7 @@ import projektschach.Figuren.Figur;
  */
 public class Läufer extends Figur{
 
-    public Läufer(String team, Feld position, String buchstabe) {
+    public Läufer(boolean team, Feld position, String buchstabe) {
         super(team, position, buchstabe);
     }
 

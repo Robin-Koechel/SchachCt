@@ -7,6 +7,9 @@ package projektschach;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.util.ArrayList;
+import javax.swing.JOptionPane;
+import projektschach.Figuren.Figur;
 
 /**
  *
@@ -80,6 +83,7 @@ public final class Spielfeld extends javax.swing.JFrame {
         lblAnweisung2.setText("nach Feld");
         lblAnweisung2.setToolTipText("");
 
+        txfZiel.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txfZiel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txfZielActionPerformed(evt);
@@ -182,6 +186,32 @@ public final class Spielfeld extends javax.swing.JFrame {
     private void btnSetzenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSetzenActionPerformed
         int[] startKoordiante = feldUmwandler.FeldInZahl(txfStart.getText());
         int[] zielKoordiante = feldUmwandler.FeldInZahl(txfZiel.getText());
+        
+        ArrayList<Figur> lstFiguren = logik.getLstFiguren();
+        
+        if(logik.istFeldBelegt(zielKoordiante)){
+            if(logik.istFeldBelegungGleicheFarbe(startKoordiante,zielKoordiante) == true){
+                JOptionPane.showMessageDialog(rootPane, "Auf diesem Feld steht eine Figur vom selben Team.");
+            }else{
+                for (int i = 0; i < logik.getLstFiguren().size(); i++) {
+                    if(lstFiguren.get(i).getPosition().getPosX() == zielKoordiante[0] && 
+                       lstFiguren.get(i).getPosition().getPosY() == zielKoordiante[1]){
+                            lstFiguren.get(i).setBesiegt(true);
+                            logik.getLstFiguren().remove(i);
+                            break;
+                    }
+                }
+                logik.setzeFigur(startKoordiante, zielKoordiante);
+                zeichneBrett();
+                zeichneFiguren();
+            }
+        }else{
+            logik.setzeFigur(startKoordiante, zielKoordiante);
+            zeichneBrett();
+            zeichneFiguren();
+        }
+        
+        
     }//GEN-LAST:event_btnSetzenActionPerformed
     
     public void zeichneBrett(){
@@ -202,7 +232,7 @@ public final class Spielfeld extends javax.swing.JFrame {
             zeichnung.drawString(feldUmwandler.NummerInBuchstabe(i), (i*breiteFeld)+(int)(breiteFeld*0.4), (int)(breiteFeld*0.7));
             zeichnung.drawString(Integer.toString(i),(int)(breiteFeld*0.4) , (i*breiteFeld)+(int)(breiteFeld*0.7));
         }
-        //zeichne Muster
+        //zeichne Muster schwarz
         for (int i = 1; i <= 8; i+=2) {
             for (int j = 1; j <= 8; j+=1) {
                 if(j%2==0){
@@ -214,16 +244,32 @@ public final class Spielfeld extends javax.swing.JFrame {
             }
         }
         
+        //zeichne Muster weiß
+        zeichnung.setColor(Color.white);
+        for (int i = 1; i <= 8; i+=2) {
+            for (int j = 1; j <= 8; j+=1) {
+                if(j%2==1){
+                    zeichnung.fillRect((i+1)*breiteFeld+1, j*breiteFeld+1, breiteFeld-1, breiteFeld-1);
+                }else{
+                    zeichnung.fillRect(i*breiteFeld+1, j*breiteFeld+1, breiteFeld-1, breiteFeld-1);
+                }
+                //zeichnung.fillRect((i+1)*breiteFeld+1, j*breiteFeld+1, breiteFeld-2, breiteFeld-2);
+            }
+        }
+        zeichnung.setColor(Color.black);
     }
     
     public void zeichneFiguren(){
-        for (int i = 0; i < logik.getLstFiguren().length; i++) {
-            int x = logik.getLstFiguren()[i].getPosition().getPosX();
-            int y = logik.getLstFiguren()[i].getPosition().getPosY();
+        ArrayList<Figur> lstFiguren = logik.getLstFiguren();
+        for (int i = 0; i < logik.getLstFiguren().size(); i++) {
+            if(lstFiguren.get(i).isBesiegt()==false){
+                int x = lstFiguren.get(i).getPosition().getPosX();
+                int y = lstFiguren.get(i).getPosition().getPosY();
 
-            zeichnung.setColor(Color.red);
-            zeichnung.drawString(logik.getLstFiguren()[i].getBuchstabe(),breiteFeld*x+12+breiteFeld,breiteFeld*y+18+breiteFeld);
-            zeichnung.setColor(Color.black);
+                zeichnung.setColor(Color.red);
+                zeichnung.drawString(lstFiguren.get(i).getBuchstabe(),breiteFeld*x+12+breiteFeld,breiteFeld*y+18+breiteFeld);
+                zeichnung.setColor(Color.black);
+            }
         }
     }
     

@@ -13,12 +13,12 @@ import projektschach.Feld;
  */
 public class Figur {
     private boolean besiegt;
-    private String team;
+    private boolean istWeiß;
     private Feld position;
     private String buchstabe;
     
-    public Figur(String team, Feld position,String buchstabe){
-        this.team = team;
+    public Figur(boolean istWeiß, Feld position,String buchstabe){
+        this.istWeiß = istWeiß;
         this.position = position;
         besiegt = false;
         this.buchstabe = buchstabe;
@@ -28,13 +28,13 @@ public class Figur {
         this.besiegt = besiegt;
     }
     public void setTeam(String team) {
-        this.team = team;
+        this.istWeiß = istWeiß;
     }
     public boolean isBesiegt() {
         return besiegt;
     }
-    public String getTeam() {
-        return team;
+    public boolean istWeiß() {
+        return istWeiß;
     }
     public Feld getPosition() {
         return position;

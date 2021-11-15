@@ -46,7 +46,6 @@ public class FeldUmwandler {
                 ergebnis[0] = 7;
                 break;
         }
-        System.out.print(Arrays.toString(ergebnis));
         return ergebnis;
     }
     
