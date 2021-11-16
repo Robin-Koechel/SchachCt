@@ -13,7 +13,9 @@ import projektschach.Feld;
  */
 public class Bauer extends Figur{
     
-    public Bauer(boolean team, Feld position, String buchstabe) {
-        super(team, position, buchstabe);
-    } 
+    public Bauer(boolean istWeiß, Feld position, String buchstabe, int wert) {
+        super(istWeiß, position, buchstabe, wert);
+    }
+    
+    
 }

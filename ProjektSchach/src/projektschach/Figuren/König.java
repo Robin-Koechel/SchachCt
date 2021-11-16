@@ -13,9 +13,9 @@ import projektschach.Figuren.Figur;
  * @author Robin
  */
 public class König extends Figur{
- 
-    public König(boolean team, Feld position, String buchstabe) {
-        super(team, position, buchstabe);
+
+    public König(boolean istWeiß, Feld position, String buchstabe, int wert) {
+        super(istWeiß, position, buchstabe, wert);
     }
- 
+
 }

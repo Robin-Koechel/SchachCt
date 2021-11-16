@@ -16,12 +16,14 @@ public class Figur {
     private boolean istWeiß;
     private Feld position;
     private String buchstabe;
+    private final int wertigkeit;
     
-    public Figur(boolean istWeiß, Feld position,String buchstabe){
+    public Figur(boolean istWeiß, Feld position,String buchstabe, int wert){
         this.istWeiß = istWeiß;
         this.position = position;
         besiegt = false;
         this.buchstabe = buchstabe;
+        this.wertigkeit = wert;
     }
     
     public void setBesiegt(boolean besiegt){
@@ -43,5 +45,7 @@ public class Figur {
     public String getBuchstabe() {
         return buchstabe;
     }
-    
+    public Feld[] getPossitionsAbleToMove(){
+        return null;
+    }
 }

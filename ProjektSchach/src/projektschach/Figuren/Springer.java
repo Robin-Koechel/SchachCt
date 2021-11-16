@@ -14,8 +14,7 @@ import projektschach.Figuren.Figur;
  */
 public class Springer extends Figur{
 
-    public Springer(boolean team, Feld position, String buchstabe) {
-        super(team, position, buchstabe);
+    public Springer(boolean istWeiß, Feld position, String buchstabe, int wert) {
+        super(istWeiß, position, buchstabe, wert);
     }
-
 }

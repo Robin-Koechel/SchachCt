@@ -15,9 +15,11 @@ public class Spieler {
     private boolean gewonnen;
     private int zaehlerVerloreneFiguren;
     
-    public Spieler(String seite){
+    public Spieler(String seite, boolean amZug){
+        //weiß bewginnt, schwarz gewinnt
         this.seite = seite;
         this.gewonnen = false;
+        this.amZug = amZug;
         zaehlerVerloreneFiguren = 0;
     }
 

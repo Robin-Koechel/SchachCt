@@ -13,8 +13,9 @@ import projektschach.Feld;
  */
 public class Dame extends Figur{
 
-    public Dame(boolean team, Feld position, String buchstabe) {
-        super(team, position, buchstabe);
+    public Dame(boolean istWeiß, Feld position, String buchstabe, int wert) {
+        super(istWeiß, position, buchstabe, wert);
     }
+
 
 }

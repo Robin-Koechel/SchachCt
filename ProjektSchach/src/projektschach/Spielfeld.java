@@ -5,9 +5,12 @@
  */
 package projektschach;
 
+import Exceptions.FigurAmZug;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import projektschach.Figuren.Figur;
 
@@ -16,12 +19,12 @@ import projektschach.Figuren.Figur;
  * @author Robin
  */
 public final class Spielfeld extends javax.swing.JFrame {
-    private int breiteSpiel;
-    private int hoeheSpiel;
-    private int breiteFeld; // 28px
-    private Graphics2D zeichnung;
-    private FeldUmwandler feldUmwandler = new FeldUmwandler();
-    private Spiellogik logik;
+    private final int breiteSpiel;
+    private final int hoeheSpiel;
+    private final int breiteFeld; // 28px
+    private final Graphics2D zeichnung;
+    private final FeldUmwandler feldUmwandler = new FeldUmwandler();
+    private final Spiellogik logik;
     /**
      * Creates new form Spielfeld
      */
@@ -61,6 +64,7 @@ public final class Spielfeld extends javax.swing.JFrame {
         txfZiel = new javax.swing.JTextField();
         btnSetzen = new javax.swing.JButton();
         btnStart = new javax.swing.JButton();
+        lblInfo = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -104,33 +108,41 @@ public final class Spielfeld extends javax.swing.JFrame {
             }
         });
 
+        lblInfo.setText("Weiß fängt an, Schwarz gewinnt");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(32, 32, 32)
+                .addComponent(canBrett, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(115, 115, 115)
-                        .addComponent(lblTitelSchach))
+                        .addGap(29, 29, 29)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(lblAnweisung1)
+                                .addContainerGap(48, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(txfZiel)
+                                    .addComponent(txfStart)
+                                    .addComponent(btnSetzen)
+                                    .addComponent(lblAnweisung2, javax.swing.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE))
+                                .addContainerGap(97, Short.MAX_VALUE))))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(32, 32, 32)
-                        .addComponent(canBrett, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(43, 43, 43)
                                 .addComponent(btnStart, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(29, 29, 29)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(lblAnweisung1)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(txfZiel)
-                                            .addComponent(txfStart)
-                                            .addComponent(btnSetzen)
-                                            .addComponent(lblAnweisung2, javax.swing.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE))
-                                        .addGap(20, 20, 20)))))))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(lblInfo)))
+                        .addGap(0, 0, Short.MAX_VALUE))))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(115, 115, 115)
+                .addComponent(lblTitelSchach)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -142,6 +154,8 @@ public final class Spielfeld extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnStart, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblInfo)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(lblAnweisung1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -155,7 +169,7 @@ public final class Spielfeld extends javax.swing.JFrame {
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(canBrett, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(11, Short.MAX_VALUE))))
+                        .addContainerGap(20, Short.MAX_VALUE))))
         );
 
         pack();
@@ -190,25 +204,28 @@ public final class Spielfeld extends javax.swing.JFrame {
         ArrayList<Figur> lstFiguren = logik.getLstFiguren();
         
         if(logik.istFeldBelegt(zielKoordiante)){
-            if(logik.istFeldBelegungGleicheFarbe(startKoordiante,zielKoordiante) == true){
+            if(logik.istFeldBelegungGleicheFarbe(startKoordiante,zielKoordiante)){
                 JOptionPane.showMessageDialog(rootPane, "Auf diesem Feld steht eine Figur vom selben Team.");
             }else{
-                for (int i = 0; i < logik.getLstFiguren().size(); i++) {
-                    if(lstFiguren.get(i).getPosition().getPosX() == zielKoordiante[0] && 
-                       lstFiguren.get(i).getPosition().getPosY() == zielKoordiante[1]){
+                try {
+                    for (int i = 0; i < logik.getLstFiguren().size(); i++) {
+                        if(lstFiguren.get(i).getPosition().getPosX() == zielKoordiante[0] &&
+                                lstFiguren.get(i).getPosition().getPosY() == zielKoordiante[1]){
                             lstFiguren.get(i).setBesiegt(true);
-                            logik.getLstFiguren().remove(i);
-                            break;
+                            logik.getLstToteFiguren().add(lstFiguren.get(i));
+                        }
                     }
+                    spielfluss(startKoordiante, zielKoordiante);
+                } catch (FigurAmZug ex) {
+                    JOptionPane.showMessageDialog(rootPane, ex);
                 }
-                logik.setzeFigur(startKoordiante, zielKoordiante);
-                zeichneBrett();
-                zeichneFiguren();
             }
         }else{
-            logik.setzeFigur(startKoordiante, zielKoordiante);
-            zeichneBrett();
-            zeichneFiguren();
+            try {
+                spielfluss(startKoordiante, zielKoordiante);
+            } catch (FigurAmZug ex) {
+                JOptionPane.showMessageDialog(rootPane, ex);
+            }
         }
         
         
@@ -262,7 +279,7 @@ public final class Spielfeld extends javax.swing.JFrame {
     public void zeichneFiguren(){
         ArrayList<Figur> lstFiguren = logik.getLstFiguren();
         for (int i = 0; i < logik.getLstFiguren().size(); i++) {
-            if(lstFiguren.get(i).isBesiegt()==false){
+            if(!lstFiguren.get(i).isBesiegt()){
                 int x = lstFiguren.get(i).getPosition().getPosX();
                 int y = lstFiguren.get(i).getPosition().getPosY();
 
@@ -271,6 +288,25 @@ public final class Spielfeld extends javax.swing.JFrame {
                 zeichnung.setColor(Color.black);
             }
         }
+    }
+    
+    public void spielfluss(int[] startKoordiante, int[] zielKoordiante) throws FigurAmZug{
+        if(logik.getFigurAufFeld(startKoordiante).istWeiß()==logik.getSpielerWeiß().isAmZug()){
+            logik.setzeFigur(startKoordiante, zielKoordiante);
+            zeichneBrett();
+            zeichneFiguren();
+
+            logik.spielerWechsel();
+            if(logik.getSpielerWeiß().isAmZug()){
+                lblInfo.setText("Weiß ist am Zug");
+            }
+            if(logik.getSpielerSchwarz().isAmZug()){
+                lblInfo.setText("Schwarz ist am Zug");
+            } 
+        }else{
+            throw new FigurAmZug("diese Figur gehört nicht zu deinem Team");
+        }
+        
     }
     
     /**
@@ -286,6 +322,7 @@ public final class Spielfeld extends javax.swing.JFrame {
     private java.awt.Canvas canBrett;
     private javax.swing.JLabel lblAnweisung1;
     private javax.swing.JLabel lblAnweisung2;
+    private javax.swing.JLabel lblInfo;
     private javax.swing.JLabel lblTitelSchach;
     private javax.swing.JTextField txfStart;
     private javax.swing.JTextField txfZiel;

@@ -10,14 +10,16 @@ import projektschach.Figuren.*;
  *
  * @author Robin
  */
-public class Spiellogik {
+public class Spiellogik {  
     private Spieler spielerWeiß;
     private Spieler spielerSchwarz;
+    
     private ArrayList<Figur> lstFiguren = new ArrayList<Figur>();
+    private ArrayList<Figur> lstToteFiguren = new ArrayList<Figur>();
     
     public Spiellogik(){
-        spielerWeiß = new Spieler("Weiß");
-        spielerSchwarz = new Spieler("Schwarz");
+        spielerWeiß = new Spieler("Weiß",true);
+        spielerSchwarz = new Spieler("Schwarz", false);
         //Weiß beginnt, Schwarz gewinnt
         spielerWeiß.setAmZug(true);
         spielerSchwarz.setAmZug(false);
@@ -29,34 +31,47 @@ public class Spiellogik {
     public void initFiguren(){
         //figuren weiß
         for (int i = 0; i < 8; i++) {
-            lstFiguren.add(new Bauer(true, new Feld(i, 1),"B"));
+            lstFiguren.add(new Bauer(true, new Feld(i, 1),"B",1));
         }
-        lstFiguren.add(new Turm(true, new Feld(0, 0),"T"));
-        lstFiguren.add(new Turm(true, new Feld(7, 0),"T"));
-        lstFiguren.add(new Springer(true, new Feld(1, 0),"S"));
-        lstFiguren.add(new Springer(true, new Feld(6, 0),"S"));
-        lstFiguren.add(new Läufer(true, new Feld(2, 0),"L"));
-        lstFiguren.add(new Läufer(true, new Feld(5, 0),"L"));
-        lstFiguren.add(new König(true, new Feld(3, 0),"K"));
-        lstFiguren.add(new Dame(true, new Feld(4, 0),"D"));
+        lstFiguren.add(new Turm(true, new Feld(0, 0),"T",5));
+        lstFiguren.add(new Turm(true, new Feld(7, 0),"T",5));
+        lstFiguren.add(new Springer(true, new Feld(1, 0),"S",5));
+        lstFiguren.add(new Springer(true, new Feld(6, 0),"S",5));
+        lstFiguren.add(new Läufer(true, new Feld(2, 0),"L",5));
+        lstFiguren.add(new Läufer(true, new Feld(5, 0),"L",5));
+        lstFiguren.add(new König(true, new Feld(3, 0),"K",15));
+        lstFiguren.add(new Dame(true, new Feld(4, 0),"D",10));
         
         //figuren schwarz
         for (int i = 16; i < 24; i++) {
-            lstFiguren.add(new Bauer(false, new Feld(i-16, 6),"B"));
+            lstFiguren.add(new Bauer(false, new Feld(i-16, 6),"B",1));
         }
-        lstFiguren.add(new Turm(false, new Feld(0, 7),"T"));
-        lstFiguren.add(new Turm(false, new Feld(7, 7),"T"));
-        lstFiguren.add(new Springer(false, new Feld(1, 7),"S"));
-        lstFiguren.add(new Springer(false, new Feld(6, 7),"S"));
-        lstFiguren.add(new Läufer(false, new Feld(2, 7),"L"));
-        lstFiguren.add(new Läufer(false, new Feld(5, 7),"L"));
-        lstFiguren.add(new König(false, new Feld(3, 7),"K"));
-        lstFiguren.add(new Dame(false, new Feld(4, 7),"D"));
+        lstFiguren.add(new Turm(false, new Feld(0, 7),"T",5));
+        lstFiguren.add(new Turm(false, new Feld(7, 7),"T",5));
+        lstFiguren.add(new Springer(false, new Feld(1, 7),"S",5));
+        lstFiguren.add(new Springer(false, new Feld(6, 7),"S",5));
+        lstFiguren.add(new Läufer(false, new Feld(2, 7),"L",5));
+        lstFiguren.add(new Läufer(false, new Feld(5, 7),"L",5));
+        lstFiguren.add(new König(false, new Feld(3, 7),"K",15));
+        lstFiguren.add(new Dame(false, new Feld(4, 7),"D",10));
     }
     public ArrayList getLstFiguren(){
         return lstFiguren;
     }
 
+    public Spieler getSpielerWeiß() {
+        return spielerWeiß;
+    }
+
+    public Spieler getSpielerSchwarz() {
+        return spielerSchwarz;
+    }
+    
+    
+    public ArrayList getLstToteFiguren(){
+        return lstToteFiguren;
+    }
+    
     public void setzeFigur(int[] startKoordiante, int[] zielKoordiante) {
         for (int i = 0; i < lstFiguren.size(); i++) {
             if(lstFiguren.get(i).getPosition().getPosX() == startKoordiante[0] && 
@@ -102,4 +117,22 @@ public class Spiellogik {
         }
         return ergebnis;
     }
+    
+    public void spielerWechsel(){
+        spielerSchwarz.setAmZug(!spielerSchwarz.isAmZug());
+        spielerWeiß.setAmZug(!spielerWeiß.isAmZug());
+    }
+    
+    public Figur getFigurAufFeld(int[] koordiante){
+        Figur ergebnis = null;
+        for (int i = 0; i < lstFiguren.size(); i++) {
+            if(lstFiguren.get(i).getPosition().getPosX() == koordiante[0] && 
+                lstFiguren.get(i).getPosition().getPosY() == koordiante[1] ){
+                ergebnis = lstFiguren.get(i);
+                break;
+            }
+        }
+        return ergebnis;
+    }
+
 }

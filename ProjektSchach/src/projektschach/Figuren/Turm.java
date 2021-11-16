@@ -14,8 +14,7 @@ import projektschach.Figuren.Figur;
  */
 public class Turm extends Figur{
 
-    public Turm(boolean team, Feld position, String buchstabe) {
-        super(team, position, buchstabe);
+    public Turm(boolean istWeiß, Feld position, String buchstabe, int wert) {
+        super(istWeiß, position, buchstabe, wert);
     }
-
 }
