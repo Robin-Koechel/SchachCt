@@ -5,6 +5,7 @@
  */
 package projektschach.Figuren;
 
+import java.util.ArrayList;
 import projektschach.Feld;
 
 /**
@@ -17,6 +18,7 @@ public class Figur {
     private Feld position;
     private String buchstabe;
     private final int wertigkeit;
+    private int anzahlGesetzt = 0;
     
     public Figur(boolean istWeiß, Feld position,String buchstabe, int wert){
         this.istWeiß = istWeiß;
@@ -45,7 +47,16 @@ public class Figur {
     public String getBuchstabe() {
         return buchstabe;
     }
-    public Feld[] getPossitionsAbleToMove(){
+    public ArrayList<Feld> getPossitionsAbleToMove(){
         return null;
     }
+
+    public int getAnzahlGesetzt() {
+        return anzahlGesetzt;
+    }
+
+    public void setAnzahlGesetzt(int anzahlGesetzt) {
+        this.anzahlGesetzt = anzahlGesetzt;
+    }
+    
 }

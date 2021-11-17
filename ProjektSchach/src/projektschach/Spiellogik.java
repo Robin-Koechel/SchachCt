@@ -31,29 +31,29 @@ public class Spiellogik {
     public void initFiguren(){
         //figuren weiß
         for (int i = 0; i < 8; i++) {
-            lstFiguren.add(new Bauer(true, new Feld(i, 1),"B",1));
+            lstFiguren.add(new Bauer(true, new Feld(i, 1),"♙",1));
         }
-        lstFiguren.add(new Turm(true, new Feld(0, 0),"T",5));
-        lstFiguren.add(new Turm(true, new Feld(7, 0),"T",5));
-        lstFiguren.add(new Springer(true, new Feld(1, 0),"S",5));
-        lstFiguren.add(new Springer(true, new Feld(6, 0),"S",5));
-        lstFiguren.add(new Läufer(true, new Feld(2, 0),"L",5));
-        lstFiguren.add(new Läufer(true, new Feld(5, 0),"L",5));
-        lstFiguren.add(new König(true, new Feld(3, 0),"K",15));
-        lstFiguren.add(new Dame(true, new Feld(4, 0),"D",10));
+        lstFiguren.add(new Turm(true, new Feld(0, 0),"♖",5));
+        lstFiguren.add(new Turm(true, new Feld(7, 0),"♖",5));
+        lstFiguren.add(new Springer(true, new Feld(1, 0),"♘",5));
+        lstFiguren.add(new Springer(true, new Feld(6, 0),"♘",5));
+        lstFiguren.add(new Läufer(true, new Feld(2, 0),"♗",5));
+        lstFiguren.add(new Läufer(true, new Feld(5, 0),"♗",5));
+        lstFiguren.add(new König(true, new Feld(3, 0),"♔",15));
+        lstFiguren.add(new Dame(true, new Feld(4, 0),"♕",10));
         
         //figuren schwarz
         for (int i = 16; i < 24; i++) {
-            lstFiguren.add(new Bauer(false, new Feld(i-16, 6),"B",1));
+            lstFiguren.add(new Bauer(false, new Feld(i-16, 6),"♟︎",1));
         }
-        lstFiguren.add(new Turm(false, new Feld(0, 7),"T",5));
-        lstFiguren.add(new Turm(false, new Feld(7, 7),"T",5));
-        lstFiguren.add(new Springer(false, new Feld(1, 7),"S",5));
-        lstFiguren.add(new Springer(false, new Feld(6, 7),"S",5));
-        lstFiguren.add(new Läufer(false, new Feld(2, 7),"L",5));
-        lstFiguren.add(new Läufer(false, new Feld(5, 7),"L",5));
-        lstFiguren.add(new König(false, new Feld(3, 7),"K",15));
-        lstFiguren.add(new Dame(false, new Feld(4, 7),"D",10));
+        lstFiguren.add(new Turm(false, new Feld(0, 7),"♜",5));
+        lstFiguren.add(new Turm(false, new Feld(7, 7),"♜",5));
+        lstFiguren.add(new Springer(false, new Feld(1, 7),"♞",5));
+        lstFiguren.add(new Springer(false, new Feld(6, 7),"♞",5));
+        lstFiguren.add(new Läufer(false, new Feld(2, 7),"♝",5));
+        lstFiguren.add(new Läufer(false, new Feld(5, 7),"♝",5));
+        lstFiguren.add(new König(false, new Feld(3, 7),"♚",15));
+        lstFiguren.add(new Dame(false, new Feld(4, 7),"♛",10));
     }
     public ArrayList getLstFiguren(){
         return lstFiguren;

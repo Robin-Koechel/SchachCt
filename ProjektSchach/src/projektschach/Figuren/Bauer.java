@@ -5,6 +5,7 @@
  */
 package projektschach.Figuren;
 
+import java.util.ArrayList;
 import projektschach.Feld;
 
 /**
@@ -17,5 +18,45 @@ public class Bauer extends Figur{
         super(istWeiß, position, buchstabe, wert);
     }
     
+    public void getPossitionsAbleToMove(ArrayList<Figur> lstFiguren){
+        ArrayList<Feld> möglichePositionImNächstenZug = new ArrayList<Feld>();
+        if(istWeiß()){
+            if(getAnzahlGesetzt()==0){
+                möglichePositionImNächstenZug.add(new Feld(getPosition().getPosX(), getPosition().getPosY()+2));
+            }
+            möglichePositionImNächstenZug.add(new Feld(getPosition().getPosX(), getPosition().getPosY()+1));
+            
+            for (int i = 0; i < lstFiguren.size(); i++) {
+                if((lstFiguren.get(i).getPosition().getPosX() == getPosition().getPosX()+1 && 
+                    lstFiguren.get(i).getPosition().getPosY() == getPosition().getPosY()+1) || 
+                    lstFiguren.get(i).getPosition().getPosX() == getPosition().getPosX()-1 && 
+                    lstFiguren.get(i).getPosition().getPosY() == getPosition().getPosY()+1){
+                    
+                    if(lstFiguren.get(i).istWeiß()){
+                        möglichePositionImNächstenZug.add(new Feld(lstFiguren.get(i).getPosition().getPosX(), lstFiguren.get(i).getPosition().getPosY()));
+                    }
+                }
+            }
+            
+        }else{
+            if(getAnzahlGesetzt()==0){
+                möglichePositionImNächstenZug.add(new Feld(getPosition().getPosX(), getPosition().getPosY()-2));
+            }
+            möglichePositionImNächstenZug.add(new Feld(getPosition().getPosX(), getPosition().getPosY()-1));
+            
+            for (int i = 0; i < lstFiguren.size(); i++) {
+                if((lstFiguren.get(i).getPosition().getPosX() == getPosition().getPosX()+1 && 
+                    lstFiguren.get(i).getPosition().getPosY() == getPosition().getPosY()-1) || 
+                    lstFiguren.get(i).getPosition().getPosX() == getPosition().getPosX()-1 && 
+                    lstFiguren.get(i).getPosition().getPosY() == getPosition().getPosY()-1){
+                    
+                    if(lstFiguren.get(i).istWeiß()){
+                        möglichePositionImNächstenZug.add(new Feld(lstFiguren.get(i).getPosition().getPosX(), lstFiguren.get(i).getPosition().getPosY()));
+                    }
+                }
+            }
+        }
+        super möglichePositionImNächstenZug;
+    }
     
 }

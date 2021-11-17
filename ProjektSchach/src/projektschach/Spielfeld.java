@@ -7,12 +7,23 @@ package projektschach;
 
 import Exceptions.FigurAmZug;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import projektschach.Figuren.Figur;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import javax.swing.JPanel;
 
 /**
  *
@@ -25,6 +36,8 @@ public final class Spielfeld extends javax.swing.JFrame {
     private final Graphics2D zeichnung;
     private final FeldUmwandler feldUmwandler = new FeldUmwandler();
     private final Spiellogik logik;
+    private final int textFontSize = 13;
+    private final int figurFontSize = 24;
     /**
      * Creates new form Spielfeld
      */
@@ -115,35 +128,29 @@ public final class Spielfeld extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(32, 32, 32)
-                .addComponent(canBrett, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(29, 29, 29)
+                        .addGap(115, 115, 115)
+                        .addComponent(lblTitelSchach))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap(32, Short.MAX_VALUE)
+                        .addComponent(canBrett, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(lblAnweisung1)
-                                .addContainerGap(48, Short.MAX_VALUE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(txfZiel)
-                                    .addComponent(txfStart)
-                                    .addComponent(btnSetzen)
-                                    .addComponent(lblAnweisung2, javax.swing.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE))
-                                .addContainerGap(97, Short.MAX_VALUE))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGap(29, 29, 29)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(lblAnweisung1)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(txfZiel)
+                                        .addComponent(txfStart)
+                                        .addComponent(btnSetzen)
+                                        .addComponent(lblAnweisung2, javax.swing.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE))))
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(43, 43, 43)
                                 .addComponent(btnStart, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(lblInfo)))
-                        .addGap(0, 0, Short.MAX_VALUE))))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(115, 115, 115)
-                .addComponent(lblTitelSchach)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(lblInfo))))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -191,7 +198,6 @@ public final class Spielfeld extends javax.swing.JFrame {
         txfZiel.setVisible(true);
         btnSetzen.setVisible(true);
         
-        
         zeichnung.setColor(Color.black);
         zeichneBrett();
         zeichneFiguren();
@@ -232,6 +238,7 @@ public final class Spielfeld extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSetzenActionPerformed
     
     public void zeichneBrett(){
+        zeichnung.setFont(new Font("TimesRoman", Font.PLAIN, textFontSize));
         //zeichne Spielfeld Rahmen
         zeichnung.drawLine(0, 0, breiteSpiel - 1, 0);
         zeichnung.drawLine(breiteSpiel - 1, 0, breiteSpiel - 1, hoeheSpiel - 1);
@@ -250,6 +257,7 @@ public final class Spielfeld extends javax.swing.JFrame {
             zeichnung.drawString(Integer.toString(i),(int)(breiteFeld*0.4) , (i*breiteFeld)+(int)(breiteFeld*0.7));
         }
         //zeichne Muster schwarz
+        zeichnung.setColor(Color.decode("#5B7B65"));
         for (int i = 1; i <= 8; i+=2) {
             for (int j = 1; j <= 8; j+=1) {
                 if(j%2==0){
@@ -278,35 +286,48 @@ public final class Spielfeld extends javax.swing.JFrame {
     
     public void zeichneFiguren(){
         ArrayList<Figur> lstFiguren = logik.getLstFiguren();
+        
+        zeichnung.setFont(new Font("TimesRoman", Font.PLAIN, figurFontSize));
         for (int i = 0; i < logik.getLstFiguren().size(); i++) {
             if(!lstFiguren.get(i).isBesiegt()){
                 int x = lstFiguren.get(i).getPosition().getPosX();
                 int y = lstFiguren.get(i).getPosition().getPosY();
 
-                zeichnung.setColor(Color.red);
-                zeichnung.drawString(lstFiguren.get(i).getBuchstabe(),breiteFeld*x+12+breiteFeld,breiteFeld*y+18+breiteFeld);
-                zeichnung.setColor(Color.black);
+                zeichnung.drawString(lstFiguren.get(i).getBuchstabe(),breiteFeld*x+4+breiteFeld,breiteFeld*y+22+breiteFeld);
+                
+                
             }
         }
+        zeichnung.setFont(new Font("TimesRoman", Font.PLAIN, textFontSize));
     }
     
     public void spielfluss(int[] startKoordiante, int[] zielKoordiante) throws FigurAmZug{
-        if(logik.getFigurAufFeld(startKoordiante).istWeiß()==logik.getSpielerWeiß().isAmZug()){
-            logik.setzeFigur(startKoordiante, zielKoordiante);
-            zeichneBrett();
-            zeichneFiguren();
-
-            logik.spielerWechsel();
-            if(logik.getSpielerWeiß().isAmZug()){
-                lblInfo.setText("Weiß ist am Zug");
-            }
-            if(logik.getSpielerSchwarz().isAmZug()){
-                lblInfo.setText("Schwarz ist am Zug");
-            } 
-        }else{
-            throw new FigurAmZug("diese Figur gehört nicht zu deinem Team");
-        }
+        Figur fig = logik.getFigurAufFeld(startKoordiante);
+        ArrayList<Feld> möglicheFelder = fig.getPossitionsAbleToMove();
         
+        for (int i = 0; i < möglicheFelder.size(); i++) {
+            Feld feld = möglicheFelder.get(i);
+            if(fig.istWeiß()==logik.getSpielerWeiß().isAmZug()){
+                if(zielKoordiante[0]==feld.getPosX() && zielKoordiante[1]==feld.getPosY()){
+                    logik.setzeFigur(startKoordiante, zielKoordiante);
+                    zeichneBrett();
+                    zeichneFiguren();
+
+                    logik.spielerWechsel();
+                    if(logik.getSpielerWeiß().isAmZug()){
+                        lblInfo.setText("Weiß ist am Zug");
+                    }
+                    if(logik.getSpielerSchwarz().isAmZug()){
+                        lblInfo.setText("Schwarz ist am Zug");
+                    } 
+                }else{
+                    throw new FigurAmZug("diese Figur kann diesen Zug nicht");
+                }
+            }else{
+                throw new FigurAmZug("diese Figur gehört nicht zu deinem Team");
+            }
+        }
+
     }
     
     /**
