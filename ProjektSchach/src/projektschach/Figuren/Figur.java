@@ -47,7 +47,7 @@ public class Figur {
     public String getBuchstabe() {
         return buchstabe;
     }
-    public ArrayList<Feld> getPossitionsAbleToMove(){
+    public ArrayList<Feld> getPossitionsAbleToMove(ArrayList<Figur> lstFiguren){
         return null;
     }
 

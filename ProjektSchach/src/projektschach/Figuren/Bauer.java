@@ -17,8 +17,8 @@ public class Bauer extends Figur{
     public Bauer(boolean istWeiß, Feld position, String buchstabe, int wert) {
         super(istWeiß, position, buchstabe, wert);
     }
-    
-    public void getPossitionsAbleToMove(ArrayList<Figur> lstFiguren){
+    @Override
+    public ArrayList<Feld> getPossitionsAbleToMove(ArrayList<Figur> lstFiguren){
         ArrayList<Feld> möglichePositionImNächstenZug = new ArrayList<Feld>();
         if(istWeiß()){
             if(getAnzahlGesetzt()==0){
@@ -56,7 +56,8 @@ public class Bauer extends Figur{
                 }
             }
         }
-        super möglichePositionImNächstenZug;
+        
+        return möglichePositionImNächstenZug;
     }
     
 }

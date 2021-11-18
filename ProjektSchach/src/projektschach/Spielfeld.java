@@ -303,7 +303,7 @@ public final class Spielfeld extends javax.swing.JFrame {
     
     public void spielfluss(int[] startKoordiante, int[] zielKoordiante) throws FigurAmZug{
         Figur fig = logik.getFigurAufFeld(startKoordiante);
-        ArrayList<Feld> möglicheFelder = fig.getPossitionsAbleToMove();
+        ArrayList<Feld> möglicheFelder = fig.getPossitionsAbleToMove(logik.getLstFiguren());
         
         for (int i = 0; i < möglicheFelder.size(); i++) {
             Feld feld = möglicheFelder.get(i);
