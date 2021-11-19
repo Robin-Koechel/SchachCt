@@ -5,6 +5,7 @@
  */
 package projektschach.Figuren;
 
+import java.util.ArrayList;
 import projektschach.Feld;
 
 /**
@@ -15,6 +16,11 @@ public class Dame extends Figur{
 
     public Dame(boolean istWeiß, Feld position, String buchstabe, int wert) {
         super(istWeiß, position, buchstabe, wert);
+    }
+
+    @Override
+    public ArrayList<Feld> getPossitionsAbleToMove(ArrayList<Figur> lstFiguren) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 

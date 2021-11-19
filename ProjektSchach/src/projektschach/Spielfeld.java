@@ -9,21 +9,9 @@ import Exceptions.FigurAmZug;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import projektschach.Figuren.Figur;
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.imageio.ImageIO;
-import javax.swing.JPanel;
 
 /**
  *
@@ -56,8 +44,6 @@ public final class Spielfeld extends javax.swing.JFrame {
         breiteFeld = breiteSpiel / 9;
         
         logik = new Spiellogik();
-        logik.initFiguren();
-        
     }
 
     /**
@@ -89,7 +75,7 @@ public final class Spielfeld extends javax.swing.JFrame {
         lblAnweisung1.setText("Bewege Spieler auf Feld ");
 
         txfStart.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txfStart.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        txfStart.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         txfStart.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txfStartActionPerformed(evt);
@@ -211,32 +197,22 @@ public final class Spielfeld extends javax.swing.JFrame {
         
         if(logik.istFeldBelegt(zielKoordiante)){
             if(logik.istFeldBelegungGleicheFarbe(startKoordiante,zielKoordiante)){
-                JOptionPane.showMessageDialog(rootPane, "Auf diesem Feld steht eine Figur vom selben Team.");
+                JOptionPane.showMessageDialog(rootPane, "Auf diesem Feld steht eine Figur vom deinem Team.");
             }else{
-                try {
-                    for (int i = 0; i < logik.getLstFiguren().size(); i++) {
-                        if(lstFiguren.get(i).getPosition().getPosX() == zielKoordiante[0] &&
-                                lstFiguren.get(i).getPosition().getPosY() == zielKoordiante[1]){
-                            lstFiguren.get(i).setBesiegt(true);
-                            logik.getLstToteFiguren().add(lstFiguren.get(i));
-                        }
+                for (int i = 0; i < logik.getLstFiguren().size(); i++) {
+                    if(lstFiguren.get(i).getPosition().getPosX() == zielKoordiante[0] &&
+                            lstFiguren.get(i).getPosition().getPosY() == zielKoordiante[1]){
+                        lstFiguren.get(i).setBesiegt(true);
+                        logik.getLstToteFiguren().add(lstFiguren.get(i));
                     }
-                    spielfluss(startKoordiante, zielKoordiante);
-                } catch (FigurAmZug ex) {
-                    JOptionPane.showMessageDialog(rootPane, ex);
                 }
-            }
-        }else{
-            try {
                 spielfluss(startKoordiante, zielKoordiante);
-            } catch (FigurAmZug ex) {
-                JOptionPane.showMessageDialog(rootPane, ex);
             }
-        }
-        
-        
+        }else{            
+            spielfluss(startKoordiante, zielKoordiante);
+        } 
     }//GEN-LAST:event_btnSetzenActionPerformed
-    
+
     public void zeichneBrett(){
         zeichnung.setFont(new Font("TimesRoman", Font.PLAIN, textFontSize));
         //zeichne Spielfeld Rahmen
@@ -283,7 +259,6 @@ public final class Spielfeld extends javax.swing.JFrame {
         }
         zeichnung.setColor(Color.black);
     }
-    
     public void zeichneFiguren(){
         ArrayList<Figur> lstFiguren = logik.getLstFiguren();
         
@@ -301,30 +276,33 @@ public final class Spielfeld extends javax.swing.JFrame {
         zeichnung.setFont(new Font("TimesRoman", Font.PLAIN, textFontSize));
     }
     
-    public void spielfluss(int[] startKoordiante, int[] zielKoordiante) throws FigurAmZug{
+    public void spielfluss(int[] startKoordiante, int[] zielKoordiante){
         Figur fig = logik.getFigurAufFeld(startKoordiante);
         ArrayList<Feld> möglicheFelder = fig.getPossitionsAbleToMove(logik.getLstFiguren());
         
         for (int i = 0; i < möglicheFelder.size(); i++) {
             Feld feld = möglicheFelder.get(i);
-            if(fig.istWeiß()==logik.getSpielerWeiß().isAmZug()){
-                if(zielKoordiante[0]==feld.getPosX() && zielKoordiante[1]==feld.getPosY()){
+            if(fig.istWeiß()==logik.getSpielerWeiß().isAmZug()){ //prüfen ob Spieler figur aus seinem Team nutzt
+                if(feld.getPosX() == zielKoordiante[0] && feld.getPosY() == zielKoordiante[1]){
                     logik.setzeFigur(startKoordiante, zielKoordiante);
                     zeichneBrett();
                     zeichneFiguren();
 
                     logik.spielerWechsel();
+
                     if(logik.getSpielerWeiß().isAmZug()){
                         lblInfo.setText("Weiß ist am Zug");
+                        break;
                     }
                     if(logik.getSpielerSchwarz().isAmZug()){
                         lblInfo.setText("Schwarz ist am Zug");
-                    } 
+                        break;
+                    }
                 }else{
-                    throw new FigurAmZug("diese Figur kann diesen Zug nicht");
-                }
+                    JOptionPane.showMessageDialog(rootPane, "diese Figur kann sich nicht auf diese Position bewegen");
+                }    
             }else{
-                throw new FigurAmZug("diese Figur gehört nicht zu deinem Team");
+                JOptionPane.showMessageDialog(rootPane, "diese Figur gehört nicht zu deinem Team");
             }
         }
 

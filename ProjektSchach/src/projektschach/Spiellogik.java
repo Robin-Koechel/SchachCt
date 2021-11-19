@@ -28,7 +28,7 @@ public class Spiellogik {
         
     }
     
-    public void initFiguren(){
+    private void initFiguren(){
         //figuren weiß
         for (int i = 0; i < 8; i++) {
             lstFiguren.add(new Bauer(true, new Feld(i, 1),"♙",1));

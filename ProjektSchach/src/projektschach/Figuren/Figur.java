@@ -12,7 +12,7 @@ import projektschach.Feld;
  *
  * @author Robin
  */
-public class Figur {
+public abstract class Figur {
     private boolean besiegt;
     private boolean istWeiß;
     private Feld position;
@@ -31,9 +31,7 @@ public class Figur {
     public void setBesiegt(boolean besiegt){
         this.besiegt = besiegt;
     }
-    public void setTeam(String team) {
-        this.istWeiß = istWeiß;
-    }
+
     public boolean isBesiegt() {
         return besiegt;
     }
@@ -47,9 +45,7 @@ public class Figur {
     public String getBuchstabe() {
         return buchstabe;
     }
-    public ArrayList<Feld> getPossitionsAbleToMove(ArrayList<Figur> lstFiguren){
-        return null;
-    }
+    public abstract ArrayList<Feld> getPossitionsAbleToMove(ArrayList<Figur> lstFiguren);
 
     public int getAnzahlGesetzt() {
         return anzahlGesetzt;
