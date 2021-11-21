@@ -131,7 +131,7 @@ public final class Spielfeld extends javax.swing.JFrame {
                                         .addComponent(txfZiel)
                                         .addComponent(txfStart)
                                         .addComponent(btnSetzen)
-                                        .addComponent(lblAnweisung2, javax.swing.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE))))
+                                        .addComponent(lblAnweisung2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(43, 43, 43)
                                 .addComponent(btnStart, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -210,7 +210,8 @@ public final class Spielfeld extends javax.swing.JFrame {
             }
         }else{            
             spielfluss(startKoordiante, zielKoordiante);
-        } 
+        }
+        System.out.println("");
     }//GEN-LAST:event_btnSetzenActionPerformed
 
     public void zeichneBrett(){
@@ -241,7 +242,6 @@ public final class Spielfeld extends javax.swing.JFrame {
                 }else{
                     zeichnung.fillRect(i*breiteFeld+1, j*breiteFeld+1, breiteFeld-1, breiteFeld-1);
                 }
-                //zeichnung.fillRect((i+1)*breiteFeld+1, j*breiteFeld+1, breiteFeld-2, breiteFeld-2);
             }
         }
         
@@ -254,7 +254,6 @@ public final class Spielfeld extends javax.swing.JFrame {
                 }else{
                     zeichnung.fillRect(i*breiteFeld+1, j*breiteFeld+1, breiteFeld-1, breiteFeld-1);
                 }
-                //zeichnung.fillRect((i+1)*breiteFeld+1, j*breiteFeld+1, breiteFeld-2, breiteFeld-2);
             }
         }
         zeichnung.setColor(Color.black);
@@ -275,35 +274,47 @@ public final class Spielfeld extends javax.swing.JFrame {
         }
         zeichnung.setFont(new Font("TimesRoman", Font.PLAIN, textFontSize));
     }
-    
     public void spielfluss(int[] startKoordiante, int[] zielKoordiante){
         Figur fig = logik.getFigurAufFeld(startKoordiante);
         ArrayList<Feld> möglicheFelder = fig.getPossitionsAbleToMove(logik.getLstFiguren());
+        boolean feldIstDabei = false;
         
+        //ungültige Felder aussortieren
         for (int i = 0; i < möglicheFelder.size(); i++) {
-            Feld feld = möglicheFelder.get(i);
-            if(fig.istWeiß()==logik.getSpielerWeiß().isAmZug()){ //prüfen ob Spieler figur aus seinem Team nutzt
-                if(feld.getPosX() == zielKoordiante[0] && feld.getPosY() == zielKoordiante[1]){
-                    logik.setzeFigur(startKoordiante, zielKoordiante);
-                    zeichneBrett();
-                    zeichneFiguren();
-
-                    logik.spielerWechsel();
-
-                    if(logik.getSpielerWeiß().isAmZug()){
-                        lblInfo.setText("Weiß ist am Zug");
-                        break;
-                    }
-                    if(logik.getSpielerSchwarz().isAmZug()){
-                        lblInfo.setText("Schwarz ist am Zug");
-                        break;
-                    }
-                }else{
-                    JOptionPane.showMessageDialog(rootPane, "diese Figur kann sich nicht auf diese Position bewegen");
-                }    
-            }else{
-                JOptionPane.showMessageDialog(rootPane, "diese Figur gehört nicht zu deinem Team");
+            if(möglicheFelder.get(i).getPosX() < 0 || möglicheFelder.get(i).getPosX() > 7){
+                if(möglicheFelder.get(i).getPosY() < 0 || möglicheFelder.get(i).getPosY() > 7){
+                    möglicheFelder.remove(i);
+                }
             }
+        }
+        
+        if(fig.istWeiß()==logik.getSpielerWeiß().isAmZug()){ //prüfen ob Spieler figur aus seinem Team nutzt
+            for (int i = 0; i < möglicheFelder.size(); i++) {
+                Feld feld = möglicheFelder.get(i);
+                if(feld.getPosX() == zielKoordiante[0] && feld.getPosY() == zielKoordiante[1]){
+                    feldIstDabei = true;
+                }
+            }
+        }else{
+            JOptionPane.showMessageDialog(rootPane, "diese Figur gehört nicht zu deinem Team");
+        }
+        if(feldIstDabei){
+            int anzahlMovesFig = logik.getFigurAufFeld(startKoordiante).getAnzahlGesetzt();
+            logik.getFigurAufFeld(startKoordiante).setAnzahlGesetzt(anzahlMovesFig+=1);
+            logik.setzeFigur(startKoordiante, zielKoordiante);
+            zeichneBrett();
+            zeichneFiguren();
+            
+            logik.spielerWechsel();
+
+            if(logik.getSpielerWeiß().isAmZug()){
+                lblInfo.setText("Weiß ist am Zug"); 
+            }
+            if(logik.getSpielerSchwarz().isAmZug()){
+                lblInfo.setText("Schwarz ist am Zug");
+            }
+        }else{
+            JOptionPane.showMessageDialog(rootPane, "diese Figur kann sich nicht auf diese Position bewegen");
         }
 
     }

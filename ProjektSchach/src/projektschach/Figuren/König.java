@@ -21,7 +21,19 @@ public class König extends Figur{
 
     @Override
     public ArrayList<Feld> getPossitionsAbleToMove(ArrayList<Figur> lstFiguren) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        ArrayList<Feld> möglichePositionImNächstenZug = new ArrayList<Feld>();
+        
+        möglichePositionImNächstenZug.add(new Feld(getPosition().getPosX()+1, getPosition().getPosY()));
+        möglichePositionImNächstenZug.add(new Feld(getPosition().getPosX()-1, getPosition().getPosY()));
+        möglichePositionImNächstenZug.add(new Feld(getPosition().getPosX(), getPosition().getPosY()+1));
+        möglichePositionImNächstenZug.add(new Feld(getPosition().getPosX(), getPosition().getPosY()-1));
+            
+        möglichePositionImNächstenZug.add(new Feld(getPosition().getPosX()+1, getPosition().getPosY()+1));
+        möglichePositionImNächstenZug.add(new Feld(getPosition().getPosX()-1, getPosition().getPosY()-1));
+        möglichePositionImNächstenZug.add(new Feld(getPosition().getPosX()-1, getPosition().getPosY()+1));
+        möglichePositionImNächstenZug.add(new Feld(getPosition().getPosX()+1, getPosition().getPosY()-1));    
+
+        return möglichePositionImNächstenZug;
     }
 
 }

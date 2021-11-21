@@ -21,6 +21,41 @@ public class Turm extends Figur{
 
     @Override
     public ArrayList<Feld> getPossitionsAbleToMove(ArrayList<Figur> lstFiguren) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        ArrayList<Feld> möglichePositionImNächstenZug = new ArrayList<Feld>();
+        ArrayList<Figur> figurenImWeg = new ArrayList<Figur>();
+        
+        for (int i = 0; i < 9; i++) {
+            möglichePositionImNächstenZug.add(new Feld(getPosition().getPosX(), getPosition().getPosY()+i));
+            möglichePositionImNächstenZug.add(new Feld(getPosition().getPosX(), getPosition().getPosY()-i));
+            möglichePositionImNächstenZug.add(new Feld(getPosition().getPosX()+i, getPosition().getPosY()));
+            möglichePositionImNächstenZug.add(new Feld(getPosition().getPosX()-i, getPosition().getPosY()));
+        }
+        
+        for (int i = 0; i < lstFiguren.size(); i++) {
+            if(lstFiguren.get(i).getPosition().getPosX() == getPosition().getPosX()){
+                figurenImWeg.add(lstFiguren.get(i));
+            }
+        }
+        for (int i = 0; i < figurenImWeg.size(); i++) {
+            if(figurenImWeg.get(i).getPosition().getPosX() == getPosition().getPosX() &&
+               figurenImWeg.get(i).getPosition().getPosY() == getPosition().getPosY()){
+                figurenImWeg.remove(i);
+            }
+        }
+        for (int i = 0; i < möglichePositionImNächstenZug.size(); i++) {
+            for (int j = 0; j < figurenImWeg.size(); j++) {
+                if(möglichePositionImNächstenZug.get(i).getPosX() >= figurenImWeg.get(j).getPosition().getPosX()&&
+                   möglichePositionImNächstenZug.get(i).getPosX() >= getPosition().getPosX()){
+                    möglichePositionImNächstenZug.remove(i);
+                }
+                if(möglichePositionImNächstenZug.get(i).getPosY() >= figurenImWeg.get(j).getPosition().getPosY()&&
+                   möglichePositionImNächstenZug.get(i).getPosY() >= getPosition().getPosY()){
+                    möglichePositionImNächstenZug.remove(i);
+                }
+            }
+        }
+        
+        
+        return möglichePositionImNächstenZug;
     }
 }

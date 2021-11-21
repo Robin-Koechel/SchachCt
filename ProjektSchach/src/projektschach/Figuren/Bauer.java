@@ -20,43 +20,74 @@ public class Bauer extends Figur{
     @Override
     public ArrayList<Feld> getPossitionsAbleToMove(ArrayList<Figur> lstFiguren){
         ArrayList<Feld> möglichePositionImNächstenZug = new ArrayList<Feld>();
-        if(istWeiß()){
+        if(istWeiß()){ //Weiße Bauern
+            //nächstes mögliches Feld finden
             if(getAnzahlGesetzt()==0){
                 möglichePositionImNächstenZug.add(new Feld(getPosition().getPosX(), getPosition().getPosY()+2));
             }
             möglichePositionImNächstenZug.add(new Feld(getPosition().getPosX(), getPosition().getPosY()+1));
             
+            //schräg schlagen
             for (int i = 0; i < lstFiguren.size(); i++) {
                 if((lstFiguren.get(i).getPosition().getPosX() == getPosition().getPosX()+1 && 
                     lstFiguren.get(i).getPosition().getPosY() == getPosition().getPosY()+1) || 
-                    lstFiguren.get(i).getPosition().getPosX() == getPosition().getPosX()-1 && 
-                    lstFiguren.get(i).getPosition().getPosY() == getPosition().getPosY()+1){
+                    (lstFiguren.get(i).getPosition().getPosX() == getPosition().getPosX()-1 && 
+                    lstFiguren.get(i).getPosition().getPosY() == getPosition().getPosY()+1)) {
                     
-                    if(lstFiguren.get(i).istWeiß()){
+                    if(!lstFiguren.get(i).istWeiß()){
                         möglichePositionImNächstenZug.add(new Feld(lstFiguren.get(i).getPosition().getPosX(), lstFiguren.get(i).getPosition().getPosY()));
                     }
                 }
             }
+            //gegenüberliegende nicht schlagen
+            for (int i = 0; i < lstFiguren.size(); i++) {
+                if(lstFiguren.get(i).getPosition().getPosX() == getPosition().getPosX() &&
+                   lstFiguren.get(i).getPosition().getPosY() == getPosition().getPosY()+1){
+                    if(!lstFiguren.get(i).istWeiß()){
+                        for (int j = 0; j < möglichePositionImNächstenZug.size(); j++) {
+                            if(möglichePositionImNächstenZug.get(j).getPosX() == lstFiguren.get(i).getPosition().getPosX() &&
+                                möglichePositionImNächstenZug.get(j).getPosY() == lstFiguren.get(i).getPosition().getPosY()){
+                                möglichePositionImNächstenZug.remove(j);
+                            }
+                        }
+                    }
+                }
+            }
             
-        }else{
+        }else{ //schwarze Bauern
+            //nächstes mögliches Feld finden
             if(getAnzahlGesetzt()==0){
                 möglichePositionImNächstenZug.add(new Feld(getPosition().getPosX(), getPosition().getPosY()-2));
             }
             möglichePositionImNächstenZug.add(new Feld(getPosition().getPosX(), getPosition().getPosY()-1));
-            
+            //schräg schlagen
             for (int i = 0; i < lstFiguren.size(); i++) {
-                if((lstFiguren.get(i).getPosition().getPosX() == getPosition().getPosX()+1 && 
-                    lstFiguren.get(i).getPosition().getPosY() == getPosition().getPosY()-1) || 
-                    lstFiguren.get(i).getPosition().getPosX() == getPosition().getPosX()-1 && 
-                    lstFiguren.get(i).getPosition().getPosY() == getPosition().getPosY()-1){
+                if(((lstFiguren.get(i).getPosition().getPosX() == getPosition().getPosX()+1 && 
+                    lstFiguren.get(i).getPosition().getPosY() == getPosition().getPosY()-1)) || 
+                    (lstFiguren.get(i).getPosition().getPosX() == getPosition().getPosX()-1 && 
+                    lstFiguren.get(i).getPosition().getPosY() == getPosition().getPosY()-1)){
                     
                     if(lstFiguren.get(i).istWeiß()){
                         möglichePositionImNächstenZug.add(new Feld(lstFiguren.get(i).getPosition().getPosX(), lstFiguren.get(i).getPosition().getPosY()));
                     }
                 }
             }
+            
         }
-        
+        //gegenüberliegende nicht schlagen
+            for (int i = 0; i < lstFiguren.size(); i++) {
+                if(lstFiguren.get(i).getPosition().getPosX() == getPosition().getPosX() &&
+                   lstFiguren.get(i).getPosition().getPosY() == getPosition().getPosY()-1){
+                    if(!lstFiguren.get(i).istWeiß()){
+                        for (int j = 0; j < möglichePositionImNächstenZug.size(); j++) {
+                            if(möglichePositionImNächstenZug.get(j).getPosX() == lstFiguren.get(i).getPosition().getPosX() &&
+                                möglichePositionImNächstenZug.get(j).getPosY() == lstFiguren.get(i).getPosition().getPosY()){
+                                möglichePositionImNächstenZug.remove(j);
+                            }
+                        }
+                    }
+                }
+            }
         return möglichePositionImNächstenZug;
     }
     
