@@ -21,6 +21,20 @@ public class Läufer extends Figur{
 
     @Override
     public ArrayList<Feld> getPossitionsAbleToMove(ArrayList<Figur> lstFiguren) {
+        ArrayList<Feld> möglichePositionImNächstenZug = new ArrayList<Feld>();
+        
+        for (int i = 0; i < 10; i++) {
+            möglichePositionImNächstenZug.add(new Feld(getPosition().getPosX()-(i+1), getPosition().getPosY()-(i+1)));
+            möglichePositionImNächstenZug.add(new Feld(getPosition().getPosX()+(i+1), getPosition().getPosY()-(i+1)));
+            möglichePositionImNächstenZug.add(new Feld(getPosition().getPosX()-(i+1), getPosition().getPosY()+(i+1)));
+            möglichePositionImNächstenZug.add(new Feld(getPosition().getPosX()+(i+1), getPosition().getPosY()+(i+1)));
+        }
+        
+        return möglichePositionImNächstenZug;
+    }
+
+    @Override
+    public boolean istFigurImWeg(int[] startKoordiante,int[] zielKoordiante) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

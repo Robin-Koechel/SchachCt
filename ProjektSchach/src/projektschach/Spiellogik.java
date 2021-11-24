@@ -58,16 +58,12 @@ public class Spiellogik {
     public ArrayList getLstFiguren(){
         return lstFiguren;
     }
-
     public Spieler getSpielerWeiß() {
         return spielerWeiß;
     }
-
     public Spieler getSpielerSchwarz() {
         return spielerSchwarz;
     }
-    
-    
     public ArrayList getLstToteFiguren(){
         return lstToteFiguren;
     }
@@ -134,5 +130,5 @@ public class Spiellogik {
         }
         return ergebnis;
     }
-
+    
 }

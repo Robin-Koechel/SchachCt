@@ -21,6 +21,26 @@ public class Springer extends Figur{
 
     @Override
     public ArrayList<Feld> getPossitionsAbleToMove(ArrayList<Figur> lstFiguren) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        ArrayList<Feld> möglichePositionImNächstenZug = new ArrayList<Feld>();
+        //oben rechts
+        möglichePositionImNächstenZug.add(new Feld(getPosition().getPosX()+1, getPosition().getPosY()-2));
+        möglichePositionImNächstenZug.add(new Feld(getPosition().getPosX()+2, getPosition().getPosY()-1));
+        //oben links
+        möglichePositionImNächstenZug.add(new Feld(getPosition().getPosX()-1, getPosition().getPosY()-2));
+        möglichePositionImNächstenZug.add(new Feld(getPosition().getPosX()-2, getPosition().getPosY()-1));
+        //unten rechts
+        möglichePositionImNächstenZug.add(new Feld(getPosition().getPosX()+1, getPosition().getPosY()+2));
+        möglichePositionImNächstenZug.add(new Feld(getPosition().getPosX()+2, getPosition().getPosY()+1));
+        //unten links
+        möglichePositionImNächstenZug.add(new Feld(getPosition().getPosX()-1, getPosition().getPosY()+2));
+        möglichePositionImNächstenZug.add(new Feld(getPosition().getPosX()-2, getPosition().getPosY()+1));
+        
+        
+        return möglichePositionImNächstenZug;
+    }
+
+    @Override
+    public boolean istFigurImWeg(int[] startKoordiante,int[] zielKoordiante) {
+        return false;
     }
 }

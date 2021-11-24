@@ -42,6 +42,7 @@ public class Turm extends Figur{
                 figurenImWeg.remove(i);
             }
         }
+        System.out.print("hey there");
         for (int i = 0; i < möglichePositionImNächstenZug.size(); i++) {
             for (int j = 0; j < figurenImWeg.size(); j++) {
                 if(möglichePositionImNächstenZug.get(i).getPosX() >= figurenImWeg.get(j).getPosition().getPosX()&&
@@ -57,5 +58,14 @@ public class Turm extends Figur{
         
         
         return möglichePositionImNächstenZug;
+    }
+
+    @Override
+    public boolean istFigurImWeg(int[] startKoordiante,int[] zielKoordiante) {
+        //x gleich
+        if(startKoordiante[0] == zielKoordiante[0]){
+            
+        }//y gleich
+        return false;
     }
 }

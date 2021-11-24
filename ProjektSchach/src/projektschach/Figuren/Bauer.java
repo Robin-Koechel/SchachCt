@@ -90,5 +90,10 @@ public class Bauer extends Figur{
             }
         return möglichePositionImNächstenZug;
     }
+
+    @Override
+    public boolean istFigurImWeg(int[] startKoordiante,int[] zielKoordiante) {
+        return false;
+    }
     
 }

@@ -280,6 +280,7 @@ public final class Spielfeld extends javax.swing.JFrame {
         boolean feldIstDabei = false;
         
         //ungültige Felder aussortieren
+        /*
         for (int i = 0; i < möglicheFelder.size(); i++) {
             if(möglicheFelder.get(i).getPosX() < 0 || möglicheFelder.get(i).getPosX() > 7){
                 if(möglicheFelder.get(i).getPosY() < 0 || möglicheFelder.get(i).getPosY() > 7){
@@ -287,7 +288,7 @@ public final class Spielfeld extends javax.swing.JFrame {
                 }
             }
         }
-        
+        */
         if(fig.istWeiß()==logik.getSpielerWeiß().isAmZug()){ //prüfen ob Spieler figur aus seinem Team nutzt
             for (int i = 0; i < möglicheFelder.size(); i++) {
                 Feld feld = möglicheFelder.get(i);
