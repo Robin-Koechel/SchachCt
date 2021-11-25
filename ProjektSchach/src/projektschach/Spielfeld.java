@@ -266,10 +266,7 @@ public final class Spielfeld extends javax.swing.JFrame {
             if(!lstFiguren.get(i).isBesiegt()){
                 int x = lstFiguren.get(i).getPosition().getPosX();
                 int y = lstFiguren.get(i).getPosition().getPosY();
-
                 zeichnung.drawString(lstFiguren.get(i).getBuchstabe(),breiteFeld*x+4+breiteFeld,breiteFeld*y+22+breiteFeld);
-                
-                
             }
         }
         zeichnung.setFont(new Font("TimesRoman", Font.PLAIN, textFontSize));
@@ -291,9 +288,13 @@ public final class Spielfeld extends javax.swing.JFrame {
         */
         if(fig.istWeiß()==logik.getSpielerWeiß().isAmZug()){ //prüfen ob Spieler figur aus seinem Team nutzt
             for (int i = 0; i < möglicheFelder.size(); i++) {
-                Feld feld = möglicheFelder.get(i);
-                if(feld.getPosX() == zielKoordiante[0] && feld.getPosY() == zielKoordiante[1]){
-                    feldIstDabei = true;
+                if(!fig.istFigurImWeg(startKoordiante, zielKoordiante, logik.getLstFiguren())){
+                    Feld feld = möglicheFelder.get(i);
+                    if(feld.getPosX() == zielKoordiante[0] && feld.getPosY() == zielKoordiante[1]){
+                        feldIstDabei = true;
+                    }
+                }else{
+                    JOptionPane.showMessageDialog(rootPane, "Du kannst nicht über andere Spielfiguren springen");
                 }
             }
         }else{

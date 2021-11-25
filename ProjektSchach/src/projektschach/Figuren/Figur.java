@@ -50,7 +50,7 @@ public abstract class Figur {
     public int getAnzahlGesetzt() {
         return anzahlGesetzt;
     }
-    public abstract boolean istFigurImWeg(int[] startKoordiante,int[] zielKoordiante);
+    public abstract boolean istFigurImWeg(int[] startKoordiante,int[] zielKoordiante, ArrayList<Figur> lstFiguren);
 
     public void setAnzahlGesetzt(int anzahlGesetzt) {
         this.anzahlGesetzt = anzahlGesetzt;

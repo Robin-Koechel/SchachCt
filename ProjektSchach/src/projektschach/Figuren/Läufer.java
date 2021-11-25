@@ -34,7 +34,21 @@ public class Läufer extends Figur{
     }
 
     @Override
-    public boolean istFigurImWeg(int[] startKoordiante,int[] zielKoordiante) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public boolean istFigurImWeg(int[] startKoordiante, int[] zielKoordiante, ArrayList<Figur> lstFiguren) {
+        boolean istFigurImWeg = false;
+        
+        return istFigurImWeg;
+    }
+    
+    public boolean istFeldBelegt(int[] zielKoordiante,ArrayList<Figur> lstFiguren){
+        boolean ergebnis = false;
+        for (int i = 0; i < lstFiguren.size(); i++) {
+            if(lstFiguren.get(i).getPosition().getPosX() == zielKoordiante[0] && 
+                lstFiguren.get(i).getPosition().getPosY() == zielKoordiante[1]){
+                ergebnis = true;
+                break;
+            }
+        }
+        return ergebnis;
     }
 }

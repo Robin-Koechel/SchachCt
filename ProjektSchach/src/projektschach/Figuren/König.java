@@ -37,8 +37,9 @@ public class König extends Figur{
     }
 
     @Override
-    public boolean istFigurImWeg(int[] startKoordiante,int[] zielKoordiante) {
+    public boolean istFigurImWeg(int[] startKoordiante, int[] zielKoordiante, ArrayList<Figur> lstFiguren) {
         return false;
     }
+
 
 }
