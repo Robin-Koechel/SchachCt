@@ -30,6 +30,8 @@ public final class Spielfeld extends javax.swing.JFrame {
      * Creates new form Spielfeld
      */
     public Spielfeld() {
+        breiteSpiel = 252;
+        hoeheSpiel = breiteSpiel;
         initComponents();
         
         lblAnweisung1.setVisible(false);
@@ -39,8 +41,6 @@ public final class Spielfeld extends javax.swing.JFrame {
         btnSetzen.setVisible(false);
         
         zeichnung = (Graphics2D)canBrett.getGraphics();
-        breiteSpiel = canBrett.getWidth();
-        hoeheSpiel = canBrett.getHeight();
         breiteFeld = breiteSpiel / 9;
         
         logik = new Spiellogik();
@@ -272,20 +272,20 @@ public final class Spielfeld extends javax.swing.JFrame {
         zeichnung.setFont(new Font("TimesRoman", Font.PLAIN, textFontSize));
     }
     public void spielfluss(int[] startKoordiante, int[] zielKoordiante){
+        long start = System.currentTimeMillis();
+        
         Figur fig = logik.getFigurAufFeld(startKoordiante);
         ArrayList<Feld> möglicheFelder = fig.getPossitionsAbleToMove(logik.getLstFiguren());
         boolean feldIstDabei = false;
         
         //ungültige Felder aussortieren
-        /*
         for (int i = 0; i < möglicheFelder.size(); i++) {
-            if(möglicheFelder.get(i).getPosX() < 0 || möglicheFelder.get(i).getPosX() > 7){
-                if(möglicheFelder.get(i).getPosY() < 0 || möglicheFelder.get(i).getPosY() > 7){
-                    möglicheFelder.remove(i);
-                }
+            if(möglicheFelder.get(i).getPosX() < 0 || möglicheFelder.get(i).getPosX() > 7 ||
+               möglicheFelder.get(i).getPosY() < 0 || möglicheFelder.get(i).getPosY() > 7){
+                möglicheFelder.remove(i);
             }
         }
-        */
+        
         if(fig.istWeiß()==logik.getSpielerWeiß().isAmZug()){ //prüfen ob Spieler figur aus seinem Team nutzt
             for (int i = 0; i < möglicheFelder.size(); i++) {
                 if(!fig.istFigurImWeg(startKoordiante, zielKoordiante, logik.getLstFiguren())){
@@ -295,15 +295,18 @@ public final class Spielfeld extends javax.swing.JFrame {
                     }
                 }else{
                     JOptionPane.showMessageDialog(rootPane, "Du kannst nicht über andere Spielfiguren springen");
+                    break;
                 }
             }
         }else{
             JOptionPane.showMessageDialog(rootPane, "diese Figur gehört nicht zu deinem Team");
         }
+        
         if(feldIstDabei){
             int anzahlMovesFig = logik.getFigurAufFeld(startKoordiante).getAnzahlGesetzt();
             logik.getFigurAufFeld(startKoordiante).setAnzahlGesetzt(anzahlMovesFig+=1);
             logik.setzeFigur(startKoordiante, zielKoordiante);
+            
             zeichneBrett();
             zeichneFiguren();
             
@@ -318,7 +321,10 @@ public final class Spielfeld extends javax.swing.JFrame {
         }else{
             JOptionPane.showMessageDialog(rootPane, "diese Figur kann sich nicht auf diese Position bewegen");
         }
-
+        
+        long end = System.currentTimeMillis();
+        float msec = end - start;
+        System.out.println(msec + " millisecs");
     }
     
     /**

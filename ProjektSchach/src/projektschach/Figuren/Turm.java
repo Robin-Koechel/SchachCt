@@ -24,45 +24,43 @@ public class Turm extends Figur{
         ArrayList<Feld> möglichePositionImNächstenZug = new ArrayList<Feld>();
         ArrayList<Figur> figurenImWeg = new ArrayList<Figur>();
         
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < 10; i++) {
             möglichePositionImNächstenZug.add(new Feld(getPosition().getPosX(), getPosition().getPosY()+i));
             möglichePositionImNächstenZug.add(new Feld(getPosition().getPosX(), getPosition().getPosY()-i));
             möglichePositionImNächstenZug.add(new Feld(getPosition().getPosX()+i, getPosition().getPosY()));
             möglichePositionImNächstenZug.add(new Feld(getPosition().getPosX()-i, getPosition().getPosY()));
         }
-        
-        for (int i = 0; i < lstFiguren.size(); i++) {
-            if(lstFiguren.get(i).getPosition().getPosX() == getPosition().getPosX()){
-                figurenImWeg.add(lstFiguren.get(i));
-            }
-        }
-        for (int i = 0; i < figurenImWeg.size(); i++) {
-            if(figurenImWeg.get(i).getPosition().getPosX() == getPosition().getPosX() &&
-               figurenImWeg.get(i).getPosition().getPosY() == getPosition().getPosY()){
-                figurenImWeg.remove(i);
-            }
-        }
-        System.out.print("hey there");
-        for (int i = 0; i < möglichePositionImNächstenZug.size(); i++) {
-            for (int j = 0; j < figurenImWeg.size(); j++) {
-                if(möglichePositionImNächstenZug.get(i).getPosX() >= figurenImWeg.get(j).getPosition().getPosX()&&
-                   möglichePositionImNächstenZug.get(i).getPosX() >= getPosition().getPosX()){
-                    möglichePositionImNächstenZug.remove(i);
-                }
-                if(möglichePositionImNächstenZug.get(i).getPosY() >= figurenImWeg.get(j).getPosition().getPosY()&&
-                   möglichePositionImNächstenZug.get(i).getPosY() >= getPosition().getPosY()){
-                    möglichePositionImNächstenZug.remove(i);
-                }
-            }
-        }
-        
-        
+
         return möglichePositionImNächstenZug;
     }
 
     @Override
     public boolean istFigurImWeg(int[] startKoordiante,int[] zielKoordiante, ArrayList<Figur> lstFiguren) {
         boolean istFigurImWeg = false;
+        int anzahlFelderAufWeg;
+        //ist x gleich?
+        if(startKoordiante[0] == zielKoordiante[0]){
+            anzahlFelderAufWeg = startKoordiante[1]-zielKoordiante[1];
+            for (int i = 1; i < Math.abs(anzahlFelderAufWeg); i++) {
+                int[] koordinate = {startKoordiante[0],startKoordiante[1] + i};
+                if(istFeldBelegt(koordinate, lstFiguren)){
+                    istFigurImWeg = true;
+                    break;
+                }
+            }
+        }
+        else{//y gleich
+            anzahlFelderAufWeg = startKoordiante[0]-zielKoordiante[0];
+            for (int i = 1; i < Math.abs(anzahlFelderAufWeg); i++) {
+                
+                int[] koordinate = {startKoordiante[0]+i,startKoordiante[1]};
+                if(istFeldBelegt(koordinate, lstFiguren)){
+                    istFigurImWeg = true;
+                    break;
+                }
+                
+            }
+        }
         
         return istFigurImWeg;
     }

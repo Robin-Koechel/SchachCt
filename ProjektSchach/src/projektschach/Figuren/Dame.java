@@ -40,7 +40,40 @@ public class Dame extends Figur{
     @Override
     public boolean istFigurImWeg(int[] startKoordiante, int[] zielKoordiante, ArrayList<Figur> lstFiguren) {
         boolean istFigurImWeg = false;
+        int anzahlFelderAufWeg;
+        //ist x gleich?
+        if(startKoordiante[0] == zielKoordiante[0]){
+            anzahlFelderAufWeg = startKoordiante[1]-zielKoordiante[1];
+            for (int i = 1; i < Math.abs(anzahlFelderAufWeg); i++) {
+                int[] koordinate = {startKoordiante[0],startKoordiante[1] + i};
+                if(istFeldBelegt(koordinate, lstFiguren)){
+                    istFigurImWeg = true;
+                    break;
+                }
+            }
+        }
+        else if(startKoordiante[1] == zielKoordiante[1]){//y gleich
+            anzahlFelderAufWeg = startKoordiante[0]-zielKoordiante[0];
+            for (int i = 1; i < Math.abs(anzahlFelderAufWeg); i++) {
                 
+                int[] koordinate = {startKoordiante[0]+i,startKoordiante[1]};
+                if(istFeldBelegt(koordinate, lstFiguren)){
+                    istFigurImWeg = true;
+                    break;
+                }
+                
+            }
+        }
+        else{
+            anzahlFelderAufWeg = startKoordiante[1]-zielKoordiante[1];
+            for (int i = 1; i < Math.abs(anzahlFelderAufWeg); i++) {
+                int[] koordinate = {startKoordiante[0]+i,startKoordiante[1] + i};
+                if(istFeldBelegt(koordinate, lstFiguren)){
+                    istFigurImWeg = true;
+                    break;
+                }
+            }
+        }
         return istFigurImWeg;
     }
     

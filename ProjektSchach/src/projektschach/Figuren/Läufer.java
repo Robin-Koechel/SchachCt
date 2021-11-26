@@ -36,7 +36,14 @@ public class Läufer extends Figur{
     @Override
     public boolean istFigurImWeg(int[] startKoordiante, int[] zielKoordiante, ArrayList<Figur> lstFiguren) {
         boolean istFigurImWeg = false;
-        
+        int anzahlFelderAufWeg = startKoordiante[1]-zielKoordiante[1];
+        for (int i = 1; i < Math.abs(anzahlFelderAufWeg); i++) {
+            int[] koordinate = {startKoordiante[0]+i,startKoordiante[1] + i};
+            if(istFeldBelegt(koordinate, lstFiguren)){
+                istFigurImWeg = true;
+                break;
+            }
+        }
         return istFigurImWeg;
     }
     
