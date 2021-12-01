@@ -26,10 +26,17 @@ public final class Spielfeld extends javax.swing.JFrame {
     private final Spiellogik logik;
     private final int textFontSize = 13;
     private final int figurFontSize = 24;
-    /**
-     * Creates new form Spielfeld
-     */
+    
+    private GUI gui;
+    
     public Spielfeld() {
+        logik = new Spiellogik();
+        //**************************
+        
+        gui = new GUI(logik);
+        gui.setVisible(true);
+        
+        //**************************
         breiteSpiel = 252;
         hoeheSpiel = breiteSpiel;
         initComponents();
@@ -43,7 +50,7 @@ public final class Spielfeld extends javax.swing.JFrame {
         zeichnung = (Graphics2D)canBrett.getGraphics();
         breiteFeld = breiteSpiel / 9;
         
-        logik = new Spiellogik();
+        
     }
 
     /**
