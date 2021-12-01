@@ -13,10 +13,11 @@ import projektschach.Feld;
  * @author Robin
  */
 public class Bauer extends Figur{
-    
-    public Bauer(boolean istWeiß, Feld position, String buchstabe, int wert) {
-        super(istWeiß, position, buchstabe, wert);
+
+    public Bauer(boolean istWeiß, Feld position, String buchstabe, int wert, boolean istKönig) {
+        super(istWeiß, position, buchstabe, wert, istKönig);
     }
+
     @Override
     public ArrayList<Feld> getPossitionsAbleToMove(ArrayList<Figur> lstFiguren){
         ArrayList<Feld> möglichePositionImNächstenZug = new ArrayList<Feld>();

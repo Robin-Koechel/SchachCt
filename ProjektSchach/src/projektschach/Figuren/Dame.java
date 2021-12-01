@@ -14,8 +14,8 @@ import projektschach.Feld;
  */
 public class Dame extends Figur{
 
-    public Dame(boolean istWeiß, Feld position, String buchstabe, int wert) {
-        super(istWeiß, position, buchstabe, wert);
+    public Dame(boolean istWeiß, Feld position, String buchstabe, int wert, boolean istKönig) {
+        super(istWeiß, position, buchstabe, wert, istKönig);
     }
 
     @Override

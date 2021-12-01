@@ -19,13 +19,15 @@ public abstract class Figur {
     private String buchstabe;
     private final int wertigkeit;
     private int anzahlGesetzt = 0;
+    private boolean istKönig;
     
-    public Figur(boolean istWeiß, Feld position,String buchstabe, int wert){
+    public Figur(boolean istWeiß, Feld position,String buchstabe, int wert, boolean istKönig){
         this.istWeiß = istWeiß;
         this.position = position;
         besiegt = false;
         this.buchstabe = buchstabe;
         this.wertigkeit = wert;
+        this.istKönig = istKönig;
     }
     
     public void setBesiegt(boolean besiegt){
@@ -55,5 +57,7 @@ public abstract class Figur {
     public void setAnzahlGesetzt(int anzahlGesetzt) {
         this.anzahlGesetzt = anzahlGesetzt;
     }
-    
+    public boolean istKönig(){
+        return istKönig;
+    }
 }

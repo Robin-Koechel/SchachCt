@@ -167,7 +167,7 @@ public final class Spielfeld extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    
     private void txfStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txfStartActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txfStartActionPerformed
@@ -203,7 +203,6 @@ public final class Spielfeld extends javax.swing.JFrame {
                     if(lstFiguren.get(i).getPosition().getPosX() == zielKoordiante[0] &&
                             lstFiguren.get(i).getPosition().getPosY() == zielKoordiante[1]){
                         lstFiguren.get(i).setBesiegt(true);
-                        logik.getLstToteFiguren().add(lstFiguren.get(i));
                     }
                 }
                 spielfluss(startKoordiante, zielKoordiante);
@@ -211,7 +210,20 @@ public final class Spielfeld extends javax.swing.JFrame {
         }else{            
             spielfluss(startKoordiante, zielKoordiante);
         }
-        System.out.println("");
+        
+        for (int i = 0; i < logik.getLstFiguren().size(); i++) {
+            Figur figur = (Figur) logik.getLstFiguren().get(i);
+            if(figur.isBesiegt()){
+                if(figur.istKönig()){
+                    lblInfo.setText(logik.spielende(figur.istWeiß()));
+                    btnSetzen.setVisible(false);
+                }
+                logik.getLstToteFiguren().add(figur);
+                lstFiguren.remove(i);
+                logik.setLstFiguren(lstFiguren);
+            }
+            
+        }
     }//GEN-LAST:event_btnSetzenActionPerformed
 
     public void zeichneBrett(){
@@ -277,7 +289,7 @@ public final class Spielfeld extends javax.swing.JFrame {
         Figur fig = logik.getFigurAufFeld(startKoordiante);
         ArrayList<Feld> möglicheFelder = fig.getPossitionsAbleToMove(logik.getLstFiguren());
         boolean feldIstDabei = false;
-        
+                
         //ungültige Felder aussortieren
         for (int i = 0; i < möglicheFelder.size(); i++) {
             if(möglicheFelder.get(i).getPosX() < 0 || möglicheFelder.get(i).getPosX() > 7 ||
@@ -325,13 +337,11 @@ public final class Spielfeld extends javax.swing.JFrame {
         long end = System.currentTimeMillis();
         float msec = end - start;
         System.out.println(msec + " millisecs");
-    }
-    
-    /**
-     * @param args the command line arguments
-     */
-
-    
+        
+        
+        //ist König geschlagen?
+        
+    }  
      
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
