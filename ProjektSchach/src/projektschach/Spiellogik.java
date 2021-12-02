@@ -53,7 +53,7 @@ public class Spiellogik {
         lstFiguren.add(new Springer(false, new Feld(6, 7),"♞",5, false));
         lstFiguren.add(new Läufer(false, new Feld(2, 7),"♝",5, false));
         lstFiguren.add(new Läufer(false, new Feld(5, 7),"♝",5, false));
-        lstFiguren.add(new König(false, new Feld(2, 2),"♚",100, true));
+        lstFiguren.add(new König(false, new Feld(3, 7),"♚",100, true));
         lstFiguren.add(new Dame(false, new Feld(4, 7),"♛",40, false));
     }
     public ArrayList getLstFiguren(){

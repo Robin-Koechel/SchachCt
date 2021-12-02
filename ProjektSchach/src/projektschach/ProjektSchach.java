@@ -15,8 +15,8 @@ public class ProjektSchach {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Spielfeld spielfeld = new Spielfeld();
-        spielfeld.setVisible(true);
+        GUI gui = new GUI();
+        gui.setVisible(true);
     }
     
 }

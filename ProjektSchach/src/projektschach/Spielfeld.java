@@ -31,12 +31,7 @@ public final class Spielfeld extends javax.swing.JFrame {
     
     public Spielfeld() {
         logik = new Spiellogik();
-        //**************************
-        
-        gui = new GUI(logik);
-        gui.setVisible(true);
-        
-        //**************************
+
         breiteSpiel = 252;
         hoeheSpiel = breiteSpiel;
         initComponents();
@@ -49,8 +44,7 @@ public final class Spielfeld extends javax.swing.JFrame {
         
         zeichnung = (Graphics2D)canBrett.getGraphics();
         breiteFeld = breiteSpiel / 9;
-        
-        
+
     }
 
     /**
