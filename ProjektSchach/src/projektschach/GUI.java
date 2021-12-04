@@ -5,11 +5,12 @@
  */
 package projektschach;
 
+import java.awt.Button;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Graphics2D;
 import java.awt.GridLayout;
+import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -27,16 +28,30 @@ public class GUI extends JFrame implements ActionListener{
     private JPanel panel;
     private JButton[][] felder = new JButton[8][8];
     private Spiellogik logik;
+    boolean bereitFürZug;
+    int counterClicks;
+    int[] startKoordiante;
+    int[] zielKoordiante;
     
     public GUI(){
        this.logik = new Spiellogik();
        initComponents();
+       bereitFürZug = false;
+       counterClicks = 0;
+       startKoordiante = new int[2];
+       zielKoordiante = new int[2];
     }
 
     public void initComponents (){
         panel = new JPanel();
         panel.setLayout(new GridLayout(8,8));
         this.add(panel);
+        
+        Button btnAI = new Button("Spiele gegen die KI");
+        Label lblInfo = new Label("Weiß beginnt, Schwarz gewinnt");
+        
+        btnAI.setVisible(true);
+        
         
         panel.setPreferredSize(new Dimension(800, 800));
         
@@ -58,6 +73,11 @@ public class GUI extends JFrame implements ActionListener{
     }
     public void zeichneFiguren(){
         ArrayList<Figur> lstFiguren = logik.getLstFiguren();
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                felder[i][j].setText("");
+            }
+        }
         
         for (int k = 0; k < lstFiguren.size(); k++) {
             if(!lstFiguren.get(k).isBesiegt()){
@@ -105,11 +125,12 @@ public class GUI extends JFrame implements ActionListener{
                     }
                 }else{
                     JOptionPane.showMessageDialog(rootPane, "Du kannst nicht über andere Spielfiguren springen");
-                    break;
+                    
                 }
             }
         }else{
             JOptionPane.showMessageDialog(rootPane, "diese Figur gehört nicht zu deinem Team");
+            
         }
         
         if(feldIstDabei){
@@ -130,6 +151,7 @@ public class GUI extends JFrame implements ActionListener{
             }
         }else{
             JOptionPane.showMessageDialog(rootPane, "diese Figur kann sich nicht auf diese Position bewegen");
+            
         }
         
         long end = System.currentTimeMillis();
@@ -138,16 +160,67 @@ public class GUI extends JFrame implements ActionListener{
     }
     @Override
     public void actionPerformed(ActionEvent e) {
+        
         for(int i = 0; i < 8; i++){
             for (int j = 0; j < 8; j++) {
                 if(felder[i][j] == e.getSource()){
-                    
-                    
+                    if(counterClicks == 0){
+                        felder[i][j].setEnabled(false);
+                        startKoordiante[0] = j;
+                        startKoordiante[1] = i;
+                        counterClicks++;
+                    }
+                    else if(counterClicks == 1){
+                        zielKoordiante[0] = j;
+                        zielKoordiante[1] = i;
+                        counterClicks = 0;
+                        bereitFürZug = true;
+                    }
                 }
             }
         }
         
+        //++++++++++++++++++++++++++++++++++++++++++++++++++++
+        if(bereitFürZug){
+            ArrayList<Figur> lstFiguren = logik.getLstFiguren();
+
+            if(logik.istFeldBelegt(zielKoordiante)){
+                if(logik.istFeldBelegungGleicheFarbe(startKoordiante,zielKoordiante)){
+                    JOptionPane.showMessageDialog(rootPane, "Auf diesem Feld steht eine Figur vom deinem Team.");
+                }else{
+                    for (int i = 0; i < logik.getLstFiguren().size(); i++) {
+                        if(lstFiguren.get(i).getPosition().getPosX() == zielKoordiante[0] &&
+                                lstFiguren.get(i).getPosition().getPosY() == zielKoordiante[1]){
+                            lstFiguren.get(i).setBesiegt(true);
+                        }
+                    }
+                    spielfluss(startKoordiante, zielKoordiante);
+                }
+            }else{            
+                spielfluss(startKoordiante, zielKoordiante);
+            }
+
+            for (int i = 0; i < logik.getLstFiguren().size(); i++) {
+                Figur figur = (Figur) logik.getLstFiguren().get(i);
+                if(figur.isBesiegt()){
+                    if(figur.istKönig()){
+                        JOptionPane.showMessageDialog(rootPane,logik.spielende(figur.istWeiß()));
+
+                    }
+                    logik.getLstToteFiguren().add(figur);
+                    lstFiguren.remove(i);
+                    logik.setLstFiguren(lstFiguren);
+                }
+
+            }
+
+        }
+        bereitFürZug = false;
+        for(int i = 0; i < 8; i++){
+            for (int j = 0; j < 8; j++) {
+                felder[i][j].setEnabled(true);
+            }
+        }
     }
-    
     
 }
