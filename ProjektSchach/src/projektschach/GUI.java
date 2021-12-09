@@ -102,8 +102,6 @@ public class GUI extends JFrame implements ActionListener{
         }
     }
     public void spielfluss(int[] startKoordiante, int[] zielKoordiante){
-        long start = System.currentTimeMillis();
-        
         Figur fig = logik.getFigurAufFeld(startKoordiante);
         ArrayList<Feld> möglicheFelder = fig.getPossitionsAbleToMove(logik.getLstFiguren());
         boolean feldIstDabei = false;
@@ -151,12 +149,8 @@ public class GUI extends JFrame implements ActionListener{
             }
         }else{
             JOptionPane.showMessageDialog(rootPane, "diese Figur kann sich nicht auf diese Position bewegen");
-            
         }
         
-        long end = System.currentTimeMillis();
-        float msec = end - start;
-        System.out.println(msec + " millisecs");
     }
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -184,37 +178,31 @@ public class GUI extends JFrame implements ActionListener{
         if(bereitFürZug){
             ArrayList<Figur> lstFiguren = logik.getLstFiguren();
 
-            if(logik.istFeldBelegt(zielKoordiante)){
-                if(logik.istFeldBelegungGleicheFarbe(startKoordiante,zielKoordiante)){
+            if(logik.istFeldBelegt(zielKoordiante)){ // Feld ist belegt
+                if(logik.istFeldBelegungGleicheFarbe(startKoordiante,zielKoordiante)){ // ist belegung vom selben Team?
                     JOptionPane.showMessageDialog(rootPane, "Auf diesem Feld steht eine Figur vom deinem Team.");
-                }else{
+                }else{  //erledige Figur
                     for (int i = 0; i < logik.getLstFiguren().size(); i++) {
                         if(lstFiguren.get(i).getPosition().getPosX() == zielKoordiante[0] &&
-                                lstFiguren.get(i).getPosition().getPosY() == zielKoordiante[1]){
+                           lstFiguren.get(i).getPosition().getPosY() == zielKoordiante[1]){
+                            //Figur entfernen und prüfen ob König
                             lstFiguren.get(i).setBesiegt(true);
+                            logik.getLstToteFiguren().add(lstFiguren.get(i));
+                            lstFiguren.remove(i);
+                            if(lstFiguren.get(i).istKönig()){
+                                JOptionPane.showMessageDialog(rootPane,logik.spielende(lstFiguren.get(i).istWeiß()));
+                            }
+                            logik.setLstFiguren(lstFiguren);
                         }
                     }
                     spielfluss(startKoordiante, zielKoordiante);
                 }
-            }else{            
+            }else{ //Feld ist nicht belegt            
                 spielfluss(startKoordiante, zielKoordiante);
             }
 
-            for (int i = 0; i < logik.getLstFiguren().size(); i++) {
-                Figur figur = (Figur) logik.getLstFiguren().get(i);
-                if(figur.isBesiegt()){
-                    if(figur.istKönig()){
-                        JOptionPane.showMessageDialog(rootPane,logik.spielende(figur.istWeiß()));
-
-                    }
-                    logik.getLstToteFiguren().add(figur);
-                    lstFiguren.remove(i);
-                    logik.setLstFiguren(lstFiguren);
-                }
-
-            }
-
         }
+        //buttons wieder zurücksetzen
         bereitFürZug = false;
         for(int i = 0; i < 8; i++){
             for (int j = 0; j < 8; j++) {

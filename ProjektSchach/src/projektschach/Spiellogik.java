@@ -19,11 +19,11 @@ public class Spiellogik {
     
     
     public Spiellogik(){
-        spielerWeiß = new Spieler("Weiß",true);
-        spielerSchwarz = new Spieler("Schwarz", false);
+        spielerWeiß = new Spieler("Weiß",false);
+        spielerSchwarz = new Spieler("Schwarz", true);
         //Weiß beginnt, Schwarz gewinnt
-        spielerWeiß.setAmZug(true);
-        spielerSchwarz.setAmZug(false);
+        spielerWeiß.setAmZug(false);
+        spielerSchwarz.setAmZug(true);
         
         initFiguren();
         
