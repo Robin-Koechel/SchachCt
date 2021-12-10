@@ -33,7 +33,11 @@ public abstract class Figur {
     public void setBesiegt(boolean besiegt){
         this.besiegt = besiegt;
     }
-
+    
+    public int getWert(){
+        return this.wertigkeit;
+    }
+    
     public boolean isBesiegt() {
         return besiegt;
     }
