@@ -152,4 +152,47 @@ public class Spiellogik {
         }
         
     }
+     public void miniMaxAlgo(int tiefe){
+        int wert = 0;
+        
+        //durch alle spieler des Teams iterieren
+        for (int i = 0; i < getFigurenEinesTeams(true).size(); i++) {
+            Figur fig = (Figur) getFigurenEinesTeams(true).get(i);
+            ArrayList<Feld> möglicheFelder= fig.getPossitionsAbleToMove(lstFiguren);
+            
+            //finde laufe durch alle möglichen Felder
+            for (int j = 0; j < möglicheFelder.size(); j++) { 
+                int[] zielfeld = new int[2];
+                zielfeld[0]=möglicheFelder.get(j).getPosX();
+                zielfeld[1]=möglicheFelder.get(j).getPosY();
+                
+                int[] startfeld = new int[2];
+                startfeld[0]=fig.getPosition().getPosX();
+                startfeld[1]=fig.getPosition().getPosY();
+                //ist Feld belegt und ist auf Feld Gegner?
+                if(istFeldBelegt(zielfeld) && istFeldBelegungGleicheFarbe(startfeld, zielfeld)){
+                    //Wert für dieses Feld ist Punktestand von geschalgenem Gegner
+                    wert = getFigurAufFeld(zielfeld).getWert();
+                } else {
+                    wert = 0;
+                }
+            }
+            if(tiefe >= 1){
+                miniMaxAlgo(tiefe-1);
+            }
+            
+        }
+    }
+    
+    public ArrayList getFigurenEinesTeams(boolean istTeamWeiß){
+        ArrayList<Figur> lstFigurenAusTeam = new ArrayList<Figur>();
+        for (int i = 0; i < lstFiguren.size(); i++) {
+            if(lstFiguren.get(i).istWeiß() == istTeamWeiß){
+                lstFigurenAusTeam.add(lstFiguren.get(i));
+            }
+        }
+        
+        
+        return lstFigurenAusTeam;
+    }
 }
