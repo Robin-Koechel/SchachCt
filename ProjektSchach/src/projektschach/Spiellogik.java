@@ -17,6 +17,12 @@ public class Spiellogik {
     private ArrayList<Figur> lstFiguren = new ArrayList<Figur>();
     private ArrayList<Figur> lstToteFiguren = new ArrayList<Figur>();
     
+    private int minMaxTiefe = 4;
+    private ArrayList<Integer> werteTiefe0 = new ArrayList<Integer>();
+    private ArrayList<Integer> werteTiefe1 = new ArrayList<Integer>();
+    private ArrayList<Integer> werteTiefe2 = new ArrayList<Integer>();
+    private ArrayList<Integer> werteTiefe3 = new ArrayList<Integer>();
+    private ArrayList<Integer> werteTiefe4 = new ArrayList<Integer>();
     
     public Spiellogik(){
         spielerWeiß = new Spieler("Weiß",false);
@@ -24,7 +30,7 @@ public class Spiellogik {
         //Weiß beginnt, Schwarz gewinnt
         spielerWeiß.setAmZug(false);
         spielerSchwarz.setAmZug(true);
-        
+                
         initFiguren();
         
     }
@@ -153,15 +159,22 @@ public class Spiellogik {
         
     }
      public void miniMaxAlgo(int tiefe){
-        int wert = 0;
-        
+
         //durch alle spieler des Teams iterieren
         for (int i = 0; i < getFigurenEinesTeams(true).size(); i++) {
             Figur fig = (Figur) getFigurenEinesTeams(true).get(i);
             ArrayList<Feld> möglicheFelder= fig.getPossitionsAbleToMove(lstFiguren);
             
+            //ungültige Felder aussortieren
+            for (int j = 0; j < möglicheFelder.size(); j++) {
+                if(möglicheFelder.get(i).getPosX() < 0 || möglicheFelder.get(i).getPosX() > 7 ||
+                   möglicheFelder.get(i).getPosY() < 0 || möglicheFelder.get(i).getPosY() > 7){
+                    möglicheFelder.remove(i);
+                }
+            }
             //finde laufe durch alle möglichen Felder
             for (int j = 0; j < möglicheFelder.size(); j++) { 
+                
                 int[] zielfeld = new int[2];
                 zielfeld[0]=möglicheFelder.get(j).getPosX();
                 zielfeld[1]=möglicheFelder.get(j).getPosY();
@@ -171,17 +184,75 @@ public class Spiellogik {
                 startfeld[1]=fig.getPosition().getPosY();
                 //ist Feld belegt und ist auf Feld Gegner?
                 if(istFeldBelegt(zielfeld) && istFeldBelegungGleicheFarbe(startfeld, zielfeld)){
-                    //Wert für dieses Feld ist Punktestand von geschalgenem Gegner
-                    wert = getFigurAufFeld(zielfeld).getWert();
+                    
+                    if(tiefe == 4){
+                        //Wert für dieses Feld ist Punktestand von geschalgenem Gegner
+                        werteTiefe0.add(getFigurAufFeld(zielfeld).getWert());
+                    }
+                    if(tiefe == 3){
+                        //Wert für dieses Feld ist Punktestand von geschalgenem Gegner
+                        werteTiefe1.add(getFigurAufFeld(zielfeld).getWert());
+                    }
+                    if(tiefe == 2){
+                        //Wert für dieses Feld ist Punktestand von geschalgenem Gegner
+                        werteTiefe2.add(getFigurAufFeld(zielfeld).getWert());
+                    }
+                    if(tiefe == 1){
+                        //Wert für dieses Feld ist Punktestand von geschalgenem Gegner
+                        werteTiefe3.add(getFigurAufFeld(zielfeld).getWert());
+                    }
+                    if(tiefe == 0){
+                        //Wert für dieses Feld ist Punktestand von geschalgenem Gegner
+                        werteTiefe4.add(getFigurAufFeld(zielfeld).getWert());
+                    }
                 } else {
-                    wert = 0;
+                    if(tiefe == 4){
+                        //Wert für dieses Feld ist Punktestand von geschalgenem Gegner
+                        werteTiefe0.add(0);
+                    }
+                    if(tiefe == 3){
+                        //Wert für dieses Feld ist Punktestand von geschalgenem Gegner
+                        werteTiefe1.add(0);
+                    }
+                    if(tiefe == 2){
+                        //Wert für dieses Feld ist Punktestand von geschalgenem Gegner
+                        werteTiefe2.add(0);
+                    }
+                    if(tiefe == 1){
+                        //Wert für dieses Feld ist Punktestand von geschalgenem Gegner
+                        werteTiefe3.add(0);
+                    }
+                    if(tiefe == 0){
+                        //Wert für dieses Feld ist Punktestand von geschalgenem Gegner
+                        werteTiefe4.add(0);
+                    }
                 }
             }
-            if(tiefe >= 1){
+            if(tiefe > 1){
                 miniMaxAlgo(tiefe-1);
             }
             
         }
+        
+        //Ergebnis ermitteln
+        int indexFigur = berechneMaxWert();
+        Figur fig = (Figur) getFigurenEinesTeams(true).get(indexFigur);
+        ArrayList<Feld> möglicheFelder= fig.getPossitionsAbleToMove(lstFiguren);
+         for (int i = 0; i < möglicheFelder.size(); i++) {
+            int[] zielfeld = new int[2];
+            zielfeld[0]=möglicheFelder.get(i).getPosX();
+            zielfeld[1]=möglicheFelder.get(i).getPosY();
+            if(getFigurAufFeld(zielfeld).getWert() == werteTiefe0.get(i)){
+                int[] startfeld = new int[2];
+                startfeld[0]=fig.getPosition().getPosX();
+                startfeld[1]=fig.getPosition().getPosY();
+                
+                 //bewege Figur da hin
+                setzeFigur(startfeld, zielfeld);
+                
+            }
+         }
+         
     }
     
     public ArrayList getFigurenEinesTeams(boolean istTeamWeiß){
@@ -195,4 +266,22 @@ public class Spiellogik {
         
         return lstFigurenAusTeam;
     }
+    public int berechneMaxWert(){
+        int indexFigur = 0;
+        int wert = 0;
+        for (int i = 0; i < werteTiefe0.size(); i++) {
+            for (int j = 0; j < werteTiefe1.size(); j++) {
+                for (int k = 0; k < werteTiefe2.size(); k++) {
+                    for (int l = 0; l < werteTiefe3.size(); l++) {
+                        if(werteTiefe0.get(i)+werteTiefe1.get(j)+werteTiefe2.get(k)+werteTiefe3.get(l) > wert){
+                            wert = werteTiefe0.get(i)+werteTiefe1.get(j)+werteTiefe2.get(k)+werteTiefe3.get(l);
+                            indexFigur = i;
+                        }
+                    }
+                }
+            }
+        }
+        return indexFigur;
+    }
+    
 }
