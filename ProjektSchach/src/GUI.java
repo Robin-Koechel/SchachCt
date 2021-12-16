@@ -6,6 +6,8 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -48,8 +50,7 @@ public class GUI extends JFrame implements ActionListener{
     
     @Override
     public void actionPerformed(ActionEvent e) {
-        
-        try{
+
             for (int i = 0; i < anzahlZeilenSpalten; i++) {
                 for (int j = 0; j < anzahlZeilenSpalten; j++) {
                     if (felder[i][j] == e.getSource()) {
@@ -69,13 +70,19 @@ public class GUI extends JFrame implements ActionListener{
                 }
             }
             if(startKoordinate != null && zielKoordinate != null){
-                logik.spielfluss(startKoordinate, zielKoordinate);
+                try {
+                    logik.spielfluss(startKoordinate, zielKoordinate);
+                } catch (Exception ex) {
+                    Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 zeichneHintergrund();
                 zeichneFiguren();
+                
+               startKoordinate = null;
+               zielKoordinate = null;
+               startknopfGedrückt = false;
             }
-        }catch(Exception ex){
-            JOptionPane.showMessageDialog(rootPane, ex);
-        }
+        
     }
 
     private void initComponents() {

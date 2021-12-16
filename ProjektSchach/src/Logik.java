@@ -74,10 +74,11 @@ public class Logik {
         
         //ungültige Felder sind schon aussortiert
         if(fig.istWeiß() == spielerWeiß.istAmZug()){//Benutzt der Spieler die richtige Farbe?
-            if((getFigurAufFeld(zielKoordinate).istWeiß() == fig.istWeiß()) || !(istFeldLeer(zielKoordinate))){//ist das Feld belegt?
-                throw new Exception("Feld ist durch Figur gleicher Farbe belegt!");            
-            }else{
-                for (int i = 0; i < möglicheFelder.size(); i++) {//ist eine Figur im Weg?
+            if(!istFeldLeer(zielKoordinate)){
+                if((getFigurAufFeld(zielKoordinate).istWeiß() == fig.istWeiß())){//ist das Feld belegt?
+                    throw new Exception("Feld ist durch Figur gleicher Farbe belegt!");
+                }else{
+                    for (int i = 0; i < möglicheFelder.size(); i++) {//ist eine Figur im Weg?
                     if(!fig.istFigurImWeg(startKoordinate, zielKoordinate, lstFiguren)){
                         int x = möglicheFelder.get(i)[0];
                         int y = möglicheFelder.get(i)[1];
@@ -90,7 +91,23 @@ public class Logik {
                         throw new Exception("Da ist ne Figur im Weg!");
                     }
                 }
+                }
+            }else{
+                for (int i = 0; i < möglicheFelder.size(); i++) {//ist eine Figur im Weg?
+                    if(!fig.istFigurImWeg(startKoordinate, zielKoordinate, lstFiguren)){
+                        int x = möglicheFelder.get(i)[0];
+                        int y = möglicheFelder.get(i)[1];
+                        if(x == zielKoordinate[0] && y == zielKoordinate[1]){
+                            break;
+                        }else{
+                            
+                        }
+                    }else{
+                        throw new Exception("Da ist ne Figur im Weg!");
+                    }
+                }
             }
+
         }else{
             throw new Exception("Diese Figur gehört nicht zu deinem Team!");
         }
@@ -133,11 +150,20 @@ public class Logik {
                 break;
             }
         }
-
-
+        
         //anzahl züge für Figur erhöhen
         int anzahlMovesFig = getFigurAufFeld(startKoordinate).getAnzahlGesetzt();
         getFigurAufFeld(startKoordinate).setAnzahlGesetzt(anzahlMovesFig+=1);
+
+        //Figur setzen
+        for (int i = 0; i < lstFiguren.size(); i++) {
+            if(lstFiguren.get(i).getPosX() == startKoordinate[0] && lstFiguren.get(i).getPosY() == startKoordinate[1]){
+                lstFiguren.get(i).setPosX(zielKoordinate[0]);
+                lstFiguren.get(i).setPosY(zielKoordinate[1]);
+            }
+                
+        }
+  
         //spielerwechsel
         spielerwechsel();
         if(spielerWeiß.istAmZug()){

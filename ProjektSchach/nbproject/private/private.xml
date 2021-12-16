@@ -3,16 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/F:/JAVA/Projekte/GUI/Schach/ProjektSchach/src/projektschach/Figuren/König.java</file>
-            <file>file:/F:/JAVA/Projekte/GUI/Schach/ProjektSchach/src/projektschach/Spiellogik.java</file>
-            <file>file:/F:/JAVA/Projekte/GUI/Schach/ProjektSchach/src/projektschach/Figuren/Bauer.java</file>
-            <file>file:/F:/JAVA/Projekte/GUI/Schach/ProjektSchach/src/projektschach/Figuren/Springer.java</file>
-            <file>file:/F:/JAVA/Projekte/GUI/Schach/ProjektSchach/src/projektschach/Spieler.java</file>
-            <file>file:/F:/JAVA/Projekte/GUI/Schach/ProjektSchach/src/projektschach/GUI.java</file>
-            <file>file:/F:/JAVA/Projekte/GUI/Schach/ProjektSchach/src/projektschach/Figuren/Figur.java</file>
-            <file>file:/F:/JAVA/Projekte/GUI/Schach/ProjektSchach/src/projektschach/Figuren/Läufer.java</file>
-            <file>file:/F:/JAVA/Projekte/GUI/Schach/ProjektSchach/src/projektschach/Figuren/Dame.java</file>
-            <file>file:/F:/JAVA/Projekte/GUI/Schach/ProjektSchach/src/projektschach/Figuren/Turm.java</file>
+            <file>file:/C:/Users/robin.koechel/Desktop/SchachCt-master/ProjektSchach/src/Logik.java</file>
+            <file>file:/C:/Users/robin.koechel/Desktop/SchachCt-master/ProjektSchach/src/Figuren/Bauer.java</file>
+            <file>file:/C:/Users/robin.koechel/Desktop/SchachCt-master/ProjektSchach/src/Figuren/Figur.java</file>
+            <file>file:/C:/Users/robin.koechel/Desktop/SchachCt-master/ProjektSchach/src/GUI.java</file>
         </group>
     </open-files>
 </project-private>
