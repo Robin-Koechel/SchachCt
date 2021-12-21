@@ -27,7 +27,7 @@ public class GUI extends JFrame implements ActionListener{
     private JButton[][] felder = new JButton[8][8];
     //Text shit
     private String textFont = "Sans";
-    private int textGröße = 40;
+    private int textGröße = 60;
     //Fenster shit
     private int anzahlZeilenSpalten = 8;
     private int breiteHöheFenster = 800;
@@ -71,8 +71,9 @@ public class GUI extends JFrame implements ActionListener{
             }
             if(startKoordinate != null && zielKoordinate != null){
                 try {
-                    logik.spielfluss(startKoordinate, zielKoordinate);
+                    logik.zugSetzen(startKoordinate, zielKoordinate);
                 } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(rootPane, ex);
                     Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 zeichneHintergrund();
@@ -82,9 +83,12 @@ public class GUI extends JFrame implements ActionListener{
                zielKoordinate = null;
                startknopfGedrückt = false;
             }
-        
+            
+            //https://www.youtube.com/watch?v=U4ogK0MIzqk
+            
     }
-
+    
+    //Hilfsmethoden
     private void initComponents() {
         panel = new JPanel();
         panel.setLayout(new GridLayout(anzahlZeilenSpalten,anzahlZeilenSpalten));

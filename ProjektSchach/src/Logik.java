@@ -29,14 +29,141 @@ public class Logik {
     private Spieler spielerWeiß;
     private Spieler spielerSchwarz;
     
-    public Logik(){
-        
+    public Logik(){  
         initFiguren();
         
         spielerWeiß = new Spieler(true, false);
         spielerSchwarz = new Spieler(false, true);
     }
+    //wichtige Methoden
+    public void zugSetzen(int[]startKoordinate,int[]zielKoordinate)throws Exception{
+          Figur fig = null;
+          ArrayList<int[]> möglicheFelder;
 
+
+          //***************************************
+          //ist das Startdfeld leer?
+          //***************************************
+          boolean startfeldLeer = true;
+          for (int i = 0; i < lstFiguren.size(); i++) {
+              if(startKoordinate[0] == lstFiguren.get(i).getPosX() && startKoordinate[1] == lstFiguren.get(i).getPosY()){ //Startfeld ist nicht leer
+                  startfeldLeer = false;
+                  fig = lstFiguren.get(i);
+                  break;
+              }
+          }
+          if(startfeldLeer == true){//Startfeld ist leer
+              throw new Exception("Leeres Feld wurde ausgewählt!");
+          }
+          else{ //Startfeld ist belegt
+              //***************************************
+              //benutzt der Spieler die richtige Farbe?
+              //***************************************
+              if(fig.istWeiß() == spielerWeiß.istAmZug()){
+                  //***************************************
+                  //Darf die Figur auf dieses Feld?
+                  //***************************************
+                  boolean darfFigurAufDiesesFeld = false;
+                  möglicheFelder = fig.getPossitionsAbleToMove(lstFiguren);
+                  for (int i = 0; i < möglicheFelder.size(); i++) {
+                      if(zielKoordinate[0] == möglicheFelder.get(i)[0] && zielKoordinate[1] == möglicheFelder.get(i)[1]){
+                          darfFigurAufDiesesFeld = true;
+                          break;
+                      }
+                  }
+                  if(darfFigurAufDiesesFeld == false){//Startfeld ist leer
+                      throw new Exception("Diese Figur darf nicht auf dieses Feld!");
+                  }
+                  else{
+                      //***************************************
+                      //Ist eine Figur im Weg?
+                      //***************************************
+                      if(fig.istFigurImWeg(startKoordinate, zielKoordinate, lstFiguren)){
+                          throw new Exception("Da ist eine Figur im Weg!");
+                      }else{
+                          //***************************************
+                          //Ist eine Figur auf dem Zielfeld?
+                          //***************************************
+                          boolean zielfeldLeer = true;
+                          Figur figurAufZielfeld = null;
+                          for (int i = 0; i < lstFiguren.size(); i++) {
+                              if(zielKoordinate[0] == lstFiguren.get(i).getPosX() && zielKoordinate[1] == lstFiguren.get(i).getPosY()){ //Zielfeld ist nicht leer
+                                  zielfeldLeer = false;
+                                  figurAufZielfeld = lstFiguren.get(i);
+                                  break;
+                              }
+                          }
+                          if(zielfeldLeer == true){//Zielfeld ist leer
+                              //++++++++++++++++++++++
+                              //setzen
+                              //++++++++++++++++++++++
+                              fig.setPosX(zielKoordinate[0]);
+                              fig.setPosY(zielKoordinate[1]);
+
+                              //anzahl züge für Figur erhöhen
+                              int anzahlMovesFig = getFigurAufFeld(zielKoordinate).getAnzahlGesetzt();
+                              getFigurAufFeld(zielKoordinate).setAnzahlGesetzt(anzahlMovesFig+=1);
+
+                              //spielerwechsel
+                              spielerwechsel();
+                              if(spielerWeiß.istAmZug()){
+                                  System.out.println("Weiß ist am Zug");
+                              }
+                              if(spielerSchwarz.istAmZug()){
+                                  System.out.println("Schwarz ist am Zug");
+                              }
+                          }
+                          else{//Zielfeld ist belegt
+                              //***************************************
+                              //ist Figur auf Zielfeld weiß?
+                              //***************************************
+                              if(figurAufZielfeld.istWeiß() == spielerWeiß.istAmZug()){//Figur ist vom selben Team
+                                  throw new Exception("Man kann nicht auf Felder springen, die schon von nem Teammate belegt sind!");
+                              }else{
+
+                                  figurAufZielfeld.setBesiegt(true);
+                                  lstToteFiguren.add(figurAufZielfeld);
+                                  lstFiguren.remove(figurAufZielfeld);
+                                  //++++++++++++++++++++++
+                                  //setzen
+                                  //++++++++++++++++++++++
+                                  fig.setPosX(zielKoordinate[0]);
+                                  fig.setPosY(zielKoordinate[1]);
+
+                                  //anzahl züge für Figur erhöhen
+                                  int anzahlMovesFig = getFigurAufFeld(zielKoordinate).getAnzahlGesetzt();
+                                  getFigurAufFeld(zielKoordinate).setAnzahlGesetzt(anzahlMovesFig+=1);
+
+                                  //spielerwechsel
+                                  spielerwechsel();
+                                  if(spielerWeiß.istAmZug()){
+                                      System.out.println("Weiß ist am Zug");
+                                  }
+                                  if(spielerSchwarz.istAmZug()){
+                                      System.out.println("Schwarz ist am Zug");
+                                  }
+                                  //Wurde König besiegt
+                                  for (int i = 0; i < lstToteFiguren.size(); i++) {
+                                      if(lstToteFiguren.get(i).istKönig()){
+                                          throw new Exception("Das Spiel ist zuende!");
+                                      }
+                                  }
+                              }
+
+                          }
+                      }
+                  }
+              }else{
+                  throw new Exception("Figur hat gehört nicht zum Team!");
+              }
+          }
+      }
+    
+    //Hilfsmethoden
+    private void spielerwechsel() {
+        spielerSchwarz.setAmZug(!spielerSchwarz.istAmZug());
+        spielerWeiß.setAmZug(!spielerWeiß.istAmZug());
+    }
     private void initFiguren() {
         //figuren weiß
         for (int i = 0; i < 8; i++) {
@@ -64,53 +191,10 @@ public class Logik {
         lstFiguren.add(new König(false, 3, 7,"♚",900, true));
         lstFiguren.add(new Dame(false, 4, 7,"♛",100, false));
     }
+    
+    //getter und setter
     public ArrayList getLstFiguren(){
         return lstFiguren;
-    }
-    public void prüfen(int[]startKoordinate,int[]zielKoordinate)throws Exception{
-        Figur fig = getFigurAufFeld(startKoordinate);
-        ArrayList<int[]> möglicheFelder = fig.getPossitionsAbleToMove(lstFiguren);        
-        
-        
-        //ungültige Felder sind schon aussortiert
-        if(fig.istWeiß() == spielerWeiß.istAmZug()){//Benutzt der Spieler die richtige Farbe?
-            if(!istFeldLeer(zielKoordinate)){
-                if((getFigurAufFeld(zielKoordinate).istWeiß() == fig.istWeiß())){//ist das Feld belegt?
-                    throw new Exception("Feld ist durch Figur gleicher Farbe belegt!");
-                }else{
-                    for (int i = 0; i < möglicheFelder.size(); i++) {//ist eine Figur im Weg?
-                    if(!fig.istFigurImWeg(startKoordinate, zielKoordinate, lstFiguren)){
-                        int x = möglicheFelder.get(i)[0];
-                        int y = möglicheFelder.get(i)[1];
-                        if(x == zielKoordinate[0] && y == zielKoordinate[1]){
-                            break;
-                        }else{
-                            throw new Exception("Felder stimmen nicht überein!");
-                        }
-                    }else{
-                        throw new Exception("Da ist ne Figur im Weg!");
-                    }
-                }
-                }
-            }else{
-                for (int i = 0; i < möglicheFelder.size(); i++) {//ist eine Figur im Weg?
-                    if(!fig.istFigurImWeg(startKoordinate, zielKoordinate, lstFiguren)){
-                        int x = möglicheFelder.get(i)[0];
-                        int y = möglicheFelder.get(i)[1];
-                        if(x == zielKoordinate[0] && y == zielKoordinate[1]){
-                            break;
-                        }else{
-                            
-                        }
-                    }else{
-                        throw new Exception("Da ist ne Figur im Weg!");
-                    }
-                }
-            }
-
-        }else{
-            throw new Exception("Diese Figur gehört nicht zu deinem Team!");
-        }
     }
     public Figur getFigurAufFeld(int[]feldKoordinate){
         Figur res = null;
@@ -134,47 +218,11 @@ public class Logik {
         }
         return res;
     }
-    public void spielfluss(int[]startKoordinate,int[]zielKoordinate) throws Exception{
-        
-        prüfen(startKoordinate,zielKoordinate);
-
-        //figuren schlagen
-        for (int i = 0; i < lstFiguren.size(); i++) {
-            if(lstFiguren.get(i).getPosX() == zielKoordinate[0] && lstFiguren.get(i).getPosY() == zielKoordinate[1]){
-                lstFiguren.get(i).setBesiegt(true);
-                lstToteFiguren.add(lstFiguren.get(i));
-                lstFiguren.remove(i);
-                if(lstFiguren.get(i).istKönig()){
-                    System.exit(2);
-                }
-                break;
-            }
+    public int getWertEinesFeldes(int[] zielfeld){
+        if(istFeldLeer(zielfeld)){
+            return 0;
+        }else{
+            return getFigurAufFeld(zielfeld).getWert();
         }
-        
-        //anzahl züge für Figur erhöhen
-        int anzahlMovesFig = getFigurAufFeld(startKoordinate).getAnzahlGesetzt();
-        getFigurAufFeld(startKoordinate).setAnzahlGesetzt(anzahlMovesFig+=1);
-
-        //Figur setzen
-        for (int i = 0; i < lstFiguren.size(); i++) {
-            if(lstFiguren.get(i).getPosX() == startKoordinate[0] && lstFiguren.get(i).getPosY() == startKoordinate[1]){
-                lstFiguren.get(i).setPosX(zielKoordinate[0]);
-                lstFiguren.get(i).setPosY(zielKoordinate[1]);
-            }
-                
-        }
-  
-        //spielerwechsel
-        spielerwechsel();
-        if(spielerWeiß.istAmZug()){
-            System.out.println("Weiß ist am Zug"); 
-        }
-        if(spielerSchwarz.istAmZug()){
-            System.out.println("Schwarz ist am Zug");
-        }
-    }
-    private void spielerwechsel() {
-        spielerSchwarz.setAmZug(!spielerSchwarz.istAmZug());
-        spielerWeiß.setAmZug(!spielerWeiß.istAmZug());
     }
 }
