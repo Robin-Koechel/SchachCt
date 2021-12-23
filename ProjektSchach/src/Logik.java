@@ -29,11 +29,17 @@ public class Logik {
     private Spieler spielerWeiß;
     private Spieler spielerSchwarz;
     
+    private int punkteWeiß;
+    private int punkteSchwarz;
+    
     public Logik(){  
         initFiguren();
         
         spielerWeiß = new Spieler(true, false);
         spielerSchwarz = new Spieler(false, true);
+        
+        punkteSchwarz = 0;
+        punkteWeiß = 0;
     }
     //wichtige Methoden
     public void zugSetzen(int[]startKoordinate,int[]zielKoordinate)throws Exception{
@@ -158,7 +164,20 @@ public class Logik {
               }
           }
       }
-    
+    public int miniMax(int tiefe, boolean istMaxFarbeWeiß){
+        if(tiefe == 0){
+            System.out.println(evaluate(istMaxFarbeWeiß));
+            return 0;
+        }
+        ArrayList<int[]> moves = getPossibleMoves(istMaxFarbeWeiß);
+        int[] bestMove = moves.get(0);
+        if(istMaxFarbeWeiß){
+            int maxEval = -999999999;
+            for (int i = 0; i < moves.size(); i++) {
+                
+            }
+        }
+    }
     //Hilfsmethoden
     private void spielerwechsel() {
         spielerSchwarz.setAmZug(!spielerSchwarz.istAmZug());
@@ -191,8 +210,41 @@ public class Logik {
         lstFiguren.add(new König(false, 3, 7,"♚",900, true));
         lstFiguren.add(new Dame(false, 4, 7,"♛",100, false));
     }
+    private int evaluate(boolean istMaxFarbeWeiß){
+        if(istMaxFarbeWeiß){
+            return punkteWeiß - punkteSchwarz;
+        }else{
+            return punkteSchwarz - punkteWeiß;
+        }
+    }
+    private boolean kannFigurFeldErreichen(Figur fig,int[] feld, ArrayList<Figur> liste){
+        boolean res = true;
+        for (int i = 0; i < fig.getPossitionsAbleToMove(liste).size(); i++) {
+            if(fig.getPossitionsAbleToMove(liste).get(i)[0]==feld[0]){
+                if(fig.getPossitionsAbleToMove(liste).get(i)[1]==feld[1]){
+                    res = true;
+                }else{
+                    res = false;
+                }
+            }else{
+                res = false;
+            }
+        }
+        return res;
+    }
     
     //getter und setter
+    public ArrayList getPossibleMoves(boolean istSeiteWeiß){
+        ArrayList<int[]> res = new ArrayList<int[]>();
+        for (int i = 0; i < lstFiguren.size(); i++) {
+            if(lstFiguren.get(i).istWeiß()){
+                for (int j = 0; j < lstFiguren.get(i).getPossitionsAbleToMove(lstFiguren).size(); j++) {
+                    res.add(lstFiguren.get(i).getPossitionsAbleToMove(lstFiguren).get(j));
+                }
+            }
+        }
+        return res;
+    }
     public ArrayList getLstFiguren(){
         return lstFiguren;
     }
