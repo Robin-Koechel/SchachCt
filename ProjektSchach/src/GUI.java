@@ -1,14 +1,20 @@
 import Figuren.Figur;
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -16,6 +22,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -45,6 +53,12 @@ public class GUI extends JFrame implements ActionListener{
     private int[] startKoordinate = null;
     private int[] zielKoordinate = null;
     
+    //modi
+    private boolean pvp = false;
+    private boolean pve = false;
+    private boolean online = false;
+    
+    
     public GUI(){
        logik = new Logik();
        initComponents();
@@ -57,6 +71,10 @@ public class GUI extends JFrame implements ActionListener{
             System.out.println(e.getActionCommand() + " JMenuItem clicked.");
             String action = e.getActionCommand();
             if (action.equals("New Game")) {
+                logik.logikReset();
+                zeichneFiguren();
+                zeichneHintergrund();
+                
             }
             if (action.equals("Open")) {
             }
@@ -66,16 +84,43 @@ public class GUI extends JFrame implements ActionListener{
                 System.exit(1);
             }
             if (action.equals("Player vs. Player")) {
+                pvp = true;
+                pve = false;
+                online = false;
             }
             if (action.equals("Player vs. AI")) {
+                pvp = false;
+                pve = true;
+                online = false;
             }
             if (action.equals("Online")) {
+                pvp = false;
+                pve = false;
+                online = true;
+            }
+            if(action.equals("Links")){
+                
+            }
+            
+            if(action.equals("Github")){
+                Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
+                if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
+                    try {
+                        desktop.browse(new URI("https://github.com/itSchuleAccRobin/SchachCt"));
+                    } catch (URISyntaxException ex) {
+                        Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IOException ex) {
+                        Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                
             }
         }    
     }
+    
     @Override
     public void actionPerformed(ActionEvent e) {
-
+        if(pvp){
             for (int i = 0; i < anzahlZeilenSpalten; i++) {
                 for (int j = 0; j < anzahlZeilenSpalten; j++) {
                     if (felder[i][j] == e.getSource()) {
@@ -110,65 +155,70 @@ public class GUI extends JFrame implements ActionListener{
             }
             
             //https://www.youtube.com/watch?v=U4ogK0MIzqk
-            
+        }  
     }
     private void showMenuDemo(){
-          //create a menu bar
-          JMenuBar menuBar = new JMenuBar();
+        //create a menu bar
+        JMenuBar menuBar = new JMenuBar();
 
-          //create menus
-          JMenu fileMenu = new JMenu("File");
+        //create menus
+        JMenu fileMenu = new JMenu("File");
+        JMenu spielmodiMenu = new JMenu("Spielmodi"); 
+        JMenu aboutMenu = new JMenu("About");
+        JMenu linkMenu = new JMenu("Links");
 
-          JMenu spielmodiMenu = new JMenu("Spielmodi"); 
-          JMenu aboutMenu = new JMenu("About");
-          JMenu linkMenu = new JMenu("Links");
+        //create menu items
+        JMenuItem newGameMenuItem = new JMenuItem("New Game");
+        newGameMenuItem.setActionCommand("New Game");
 
-          //create menu items
-          JMenuItem newGameMenuItem = new JMenuItem("New Game");
-          newGameMenuItem.setMnemonic(KeyEvent.VK_N);
-          newGameMenuItem.setActionCommand("New Game");
+        JMenuItem openMenuItem = new JMenuItem("Open");
+        openMenuItem.setActionCommand("Open");
 
-          JMenuItem openMenuItem = new JMenuItem("Open");
-          openMenuItem.setActionCommand("Open");
+        JMenuItem saveMenuItem = new JMenuItem("Save");
+        saveMenuItem.setActionCommand("Save");
 
-          JMenuItem saveMenuItem = new JMenuItem("Save");
-          saveMenuItem.setActionCommand("Save");
-
-          JMenuItem exitMenuItem = new JMenuItem("Exit");
-          exitMenuItem.setActionCommand("Exit");
+        JMenuItem exitMenuItem = new JMenuItem("Exit");
+        exitMenuItem.setActionCommand("Exit");
 
 
-          JMenuItem pvpMenuItem = new JMenuItem("Player vs. Player");
-          pvpMenuItem.setActionCommand("Player vs. Player");
+        JMenuItem pvpMenuItem = new JMenuItem("Player vs. Player");
+        pvpMenuItem.setActionCommand("Player vs. Player");
 
-          JMenuItem pveItem = new JMenuItem("Player vs. AI");
-          pveItem.setActionCommand("Player vs. AI");
+        JMenuItem pveItem = new JMenuItem("Player vs. AI");
+        pveItem.setActionCommand("Player vs. AI");
 
-          JMenuItem onlineMenuItem = new JMenuItem("Online");
-          onlineMenuItem.setActionCommand("Online");
+        JMenuItem onlineMenuItem = new JMenuItem("Online");
+        onlineMenuItem.setActionCommand("Online");
+        
+        JMenuItem gitMenuItem = new JMenuItem("Github");
+        gitMenuItem.setActionCommand("Github");
 
-          MenuItemListener menuItemListener = new MenuItemListener();
+        MenuItemListener menuItemListener = new MenuItemListener();
 
-          newGameMenuItem.addActionListener(menuItemListener);
-          openMenuItem.addActionListener(menuItemListener);
-          saveMenuItem.addActionListener(menuItemListener);
-          exitMenuItem.addActionListener(menuItemListener);
-          pvpMenuItem.addActionListener(menuItemListener);
-          pveItem.addActionListener(menuItemListener);
-          onlineMenuItem.addActionListener(menuItemListener);
+        newGameMenuItem.addActionListener(menuItemListener);
+        openMenuItem.addActionListener(menuItemListener);
+        saveMenuItem.addActionListener(menuItemListener);
+        exitMenuItem.addActionListener(menuItemListener);
+        pvpMenuItem.addActionListener(menuItemListener);
+        gitMenuItem.addActionListener(menuItemListener);
+        pveItem.addActionListener(menuItemListener);
+        onlineMenuItem.addActionListener(menuItemListener);
+        aboutMenu.addActionListener(menuItemListener);
+        linkMenu.addActionListener(menuItemListener);
+        
 
-
-          //add menu items to menus
-          fileMenu.add(newGameMenuItem);
-          fileMenu.add(openMenuItem);
-          fileMenu.add(saveMenuItem);
-          fileMenu.addSeparator();
-
+        //add menu items to menus
+        fileMenu.add(newGameMenuItem);
+        fileMenu.add(openMenuItem);
+        fileMenu.add(saveMenuItem);
+        fileMenu.addSeparator();
         fileMenu.add(exitMenuItem);        
       
         spielmodiMenu.add(pvpMenuItem);
         spielmodiMenu.add(pveItem);
         spielmodiMenu.add(onlineMenuItem);
+        
+        linkMenu.add(gitMenuItem);
 
         //add menu to menubar
         menuBar.add(fileMenu);
@@ -236,7 +286,5 @@ public class GUI extends JFrame implements ActionListener{
                 felder[y][x].setText(lstFiguren.get(k).getBuchstabe());
             }
         }
-    }
-    
-    
+    } 
 }
