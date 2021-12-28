@@ -277,6 +277,10 @@ public class Logik {
         lstFiguren.add(new Läufer(false, 5, 7,"♝",30, false));
         lstFiguren.add(new König(false, 3, 7,"♚",900, true));
         lstFiguren.add(new Dame(false, 4, 7,"♛",100, false));
+        
+        for (int i = 0; i < lstFiguren.size(); i++) {
+            lstFiguren.get(i).setAnzahlGesetzt(0);
+        }
     }
     private int evaluate(boolean istMaxFarbeWeiß){
         if(istMaxFarbeWeiß){
@@ -300,7 +304,8 @@ public class Logik {
         }
         return res;
     }
-    private void logikReset(){
+    public void logikReset(){
+        lstFiguren = new ArrayList<Figur>();
         initFiguren();
         tempLstFiguren = lstFiguren;
         
