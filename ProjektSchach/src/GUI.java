@@ -5,11 +5,15 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 /*
@@ -47,7 +51,28 @@ public class GUI extends JFrame implements ActionListener{
        
        startknopfGedrückt = false;
     }
-    
+    class MenuItemListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {            
+            System.out.println(e.getActionCommand() + " JMenuItem clicked.");
+            String action = e.getActionCommand();
+            if (action.equals("New Game")) {
+            }
+            if (action.equals("Open")) {
+            }
+            if (action.equals("Save")) {
+            }
+            if (action.equals("Exit")) {
+                System.exit(1);
+            }
+            if (action.equals("Player vs. Player")) {
+            }
+            if (action.equals("Player vs. AI")) {
+            }
+            if (action.equals("Online")) {
+            }
+        }    
+    }
     @Override
     public void actionPerformed(ActionEvent e) {
 
@@ -71,7 +96,7 @@ public class GUI extends JFrame implements ActionListener{
             }
             if(startKoordinate != null && zielKoordinate != null){
                 try {
-                    logik.zugSetzen(startKoordinate, zielKoordinate);
+                    logik.zugSetzen(startKoordinate, zielKoordinate,logik.getLstFiguren());
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(rootPane, ex);
                     Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
@@ -87,7 +112,75 @@ public class GUI extends JFrame implements ActionListener{
             //https://www.youtube.com/watch?v=U4ogK0MIzqk
             
     }
-    
+    private void showMenuDemo(){
+          //create a menu bar
+          JMenuBar menuBar = new JMenuBar();
+
+          //create menus
+          JMenu fileMenu = new JMenu("File");
+
+          JMenu spielmodiMenu = new JMenu("Spielmodi"); 
+          JMenu aboutMenu = new JMenu("About");
+          JMenu linkMenu = new JMenu("Links");
+
+          //create menu items
+          JMenuItem newGameMenuItem = new JMenuItem("New Game");
+          newGameMenuItem.setMnemonic(KeyEvent.VK_N);
+          newGameMenuItem.setActionCommand("New Game");
+
+          JMenuItem openMenuItem = new JMenuItem("Open");
+          openMenuItem.setActionCommand("Open");
+
+          JMenuItem saveMenuItem = new JMenuItem("Save");
+          saveMenuItem.setActionCommand("Save");
+
+          JMenuItem exitMenuItem = new JMenuItem("Exit");
+          exitMenuItem.setActionCommand("Exit");
+
+
+          JMenuItem pvpMenuItem = new JMenuItem("Player vs. Player");
+          pvpMenuItem.setActionCommand("Player vs. Player");
+
+          JMenuItem pveItem = new JMenuItem("Player vs. AI");
+          pveItem.setActionCommand("Player vs. AI");
+
+          JMenuItem onlineMenuItem = new JMenuItem("Online");
+          onlineMenuItem.setActionCommand("Online");
+
+          MenuItemListener menuItemListener = new MenuItemListener();
+
+          newGameMenuItem.addActionListener(menuItemListener);
+          openMenuItem.addActionListener(menuItemListener);
+          saveMenuItem.addActionListener(menuItemListener);
+          exitMenuItem.addActionListener(menuItemListener);
+          pvpMenuItem.addActionListener(menuItemListener);
+          pveItem.addActionListener(menuItemListener);
+          onlineMenuItem.addActionListener(menuItemListener);
+
+
+          //add menu items to menus
+          fileMenu.add(newGameMenuItem);
+          fileMenu.add(openMenuItem);
+          fileMenu.add(saveMenuItem);
+          fileMenu.addSeparator();
+
+        fileMenu.add(exitMenuItem);        
+      
+        spielmodiMenu.add(pvpMenuItem);
+        spielmodiMenu.add(pveItem);
+        spielmodiMenu.add(onlineMenuItem);
+
+        //add menu to menubar
+        menuBar.add(fileMenu);
+        menuBar.add(spielmodiMenu);
+        menuBar.add(aboutMenu);       
+        menuBar.add(linkMenu);
+
+        //add menubar to the frame
+        this.setJMenuBar(menuBar);
+        this.setVisible(true); 
+      
+    }
     //Hilfsmethoden
     private void initComponents() {
         panel = new JPanel();
@@ -106,6 +199,8 @@ public class GUI extends JFrame implements ActionListener{
                 felder[i][j].setFont(new Font(textFont, Font.PLAIN, textGröße));
             }
         }
+        //init menu
+        showMenuDemo();
         
         this.pack();
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

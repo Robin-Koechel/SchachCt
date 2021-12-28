@@ -24,7 +24,10 @@ import javax.swing.JOptionPane;
  */
 public class Logik {
     private ArrayList<Figur> lstFiguren = new ArrayList<Figur>();
+    private ArrayList<Figur> tempLstFiguren = new ArrayList<Figur>();
     private ArrayList<Figur> lstToteFiguren = new ArrayList<Figur>();
+    
+    private int[] tempPos={0,0};
     
     private Spieler spielerWeiß;
     private Spieler spielerSchwarz;
@@ -34,6 +37,7 @@ public class Logik {
     
     public Logik(){  
         initFiguren();
+        tempLstFiguren = lstFiguren;
         
         spielerWeiß = new Spieler(true, false);
         spielerSchwarz = new Spieler(false, true);
@@ -42,7 +46,7 @@ public class Logik {
         punkteWeiß = 0;
     }
     //wichtige Methoden
-    public void zugSetzen(int[]startKoordinate,int[]zielKoordinate)throws Exception{
+    public void zugSetzen(int[]startKoordinate,int[]zielKoordinate, ArrayList<Figur> lstFiguren)throws Exception{
           Figur fig = null;
           ArrayList<int[]> möglicheFelder;
 
@@ -173,10 +177,74 @@ public class Logik {
         int[] bestMove = moves.get(0);
         if(istMaxFarbeWeiß){
             int maxEval = -999999999;
-            for (int i = 0; i < moves.size(); i++) {
-                
+            
+            for (int j = 0; j < moves.size(); j++) {
+                for (int i = 0; i < tempLstFiguren.size(); i++) {
+                    for (int k = 0; k < tempLstFiguren.get(i).getPossitionsAbleToMove(tempLstFiguren).size(); k++) {
+                        if(tempLstFiguren.get(k).getPossitionsAbleToMove(tempLstFiguren).get(k)==moves.get(j) && 
+                           tempLstFiguren.get(k).getPossitionsAbleToMove(tempLstFiguren).get(k)==moves.get(j)){
+                            //set fig
+                            int[] startPos = {tempLstFiguren.get(i).getPosX(), tempLstFiguren.get(i).getPosY()};
+                            int[] zielPos = {moves.get(j)[0], moves.get(j)[1]};
+                            try {
+                                zugSetzen(startPos,zielPos,tempLstFiguren);
+                            } catch (Exception ex) {
+                                Logger.getLogger(Logik.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            //next gen
+                            int tempEval = miniMax(tiefe-1, istMaxFarbeWeiß);
+                            //unset fig
+                            try {
+                                zugSetzen(zielPos, startPos, tempLstFiguren);
+                            } catch (Exception ex) {
+                                Logger.getLogger(Logik.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            if(tempEval > maxEval){
+                                maxEval = tempEval;
+                                bestMove = moves.get(j);
+                            }
+                        }
+                    }
+                }
+                return maxEval;
+            }
+
+        }else{
+            
+            int maxEval = 999999999;
+            
+            for (int j = 0; j < moves.size(); j++) {
+                for (int i = 0; i < tempLstFiguren.size(); i++) {
+                    for (int k = 0; k < tempLstFiguren.get(i).getPossitionsAbleToMove(tempLstFiguren).size(); k++) {
+                        if(tempLstFiguren.get(k).getPossitionsAbleToMove(tempLstFiguren).get(k)==moves.get(j) && 
+                           tempLstFiguren.get(k).getPossitionsAbleToMove(tempLstFiguren).get(k)==moves.get(j)){
+                            //set fig
+                            int[] startPos = {tempLstFiguren.get(i).getPosX(), tempLstFiguren.get(i).getPosY()};
+                            int[] zielPos = {moves.get(j)[0], moves.get(j)[1]};
+                            try {
+                                zugSetzen(startPos,zielPos,tempLstFiguren);
+                            } catch (Exception ex) {
+                                Logger.getLogger(Logik.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            //next gen
+                            int tempEval = miniMax(tiefe-1, !istMaxFarbeWeiß);
+                            //unset fig
+                            try {
+                                zugSetzen(zielPos, startPos, tempLstFiguren);
+                            } catch (Exception ex) {
+                                Logger.getLogger(Logik.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            if(tempEval < maxEval){
+                                maxEval = tempEval;
+                                bestMove = moves.get(j);
+                            }
+                        }
+                    }
+                }
+                return maxEval;
             }
         }
+        return 0;
     }
     //Hilfsmethoden
     private void spielerwechsel() {
@@ -231,6 +299,16 @@ public class Logik {
             }
         }
         return res;
+    }
+    private void logikReset(){
+        initFiguren();
+        tempLstFiguren = lstFiguren;
+        
+        spielerWeiß = new Spieler(true, false);
+        spielerSchwarz = new Spieler(false, true);
+        
+        punkteSchwarz = 0;
+        punkteWeiß = 0;
     }
     
     //getter und setter
