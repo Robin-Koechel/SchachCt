@@ -169,20 +169,23 @@ public class Logik {
           }
       }
     public int miniMax(int tiefe, boolean istMaxFarbeWeiß){
-        if(tiefe == 0){
-            System.out.println(evaluate(istMaxFarbeWeiß));
-            return 0;
-        }
         ArrayList<int[]> moves = getPossibleMoves(istMaxFarbeWeiß);
         int[] bestMove = moves.get(0);
+        if(tiefe == 0){
+            System.out.println(evaluate(istMaxFarbeWeiß));
+            System.out.println(bestMove);
+            return 0;
+        }
+        
         if(istMaxFarbeWeiß){
             int maxEval = -999999999;
             
             for (int j = 0; j < moves.size(); j++) {
                 for (int i = 0; i < tempLstFiguren.size(); i++) {
                     for (int k = 0; k < tempLstFiguren.get(i).getPossitionsAbleToMove(tempLstFiguren).size(); k++) {
-                        if(tempLstFiguren.get(k).getPossitionsAbleToMove(tempLstFiguren).get(k)==moves.get(j) && 
-                           tempLstFiguren.get(k).getPossitionsAbleToMove(tempLstFiguren).get(k)==moves.get(j)){
+                        if(tempLstFiguren.get(i).getPossitionsAbleToMove(tempLstFiguren).get(k)==moves.get(j) && 
+                           tempLstFiguren.get(i).getPossitionsAbleToMove(tempLstFiguren).get(k)==moves.get(j)){
+                            System.out.println(tiefe);
                             //set fig
                             int[] startPos = {tempLstFiguren.get(i).getPosX(), tempLstFiguren.get(i).getPosY()};
                             int[] zielPos = {moves.get(j)[0], moves.get(j)[1]};
@@ -216,8 +219,8 @@ public class Logik {
             for (int j = 0; j < moves.size(); j++) {
                 for (int i = 0; i < tempLstFiguren.size(); i++) {
                     for (int k = 0; k < tempLstFiguren.get(i).getPossitionsAbleToMove(tempLstFiguren).size(); k++) {
-                        if(tempLstFiguren.get(k).getPossitionsAbleToMove(tempLstFiguren).get(k)==moves.get(j) && 
-                           tempLstFiguren.get(k).getPossitionsAbleToMove(tempLstFiguren).get(k)==moves.get(j)){
+                        if(tempLstFiguren.get(i).getPossitionsAbleToMove(tempLstFiguren).get(k)==moves.get(j) && 
+                           tempLstFiguren.get(i).getPossitionsAbleToMove(tempLstFiguren).get(k)==moves.get(j)){
                             //set fig
                             int[] startPos = {tempLstFiguren.get(i).getPosX(), tempLstFiguren.get(i).getPosY()};
                             int[] zielPos = {moves.get(j)[0], moves.get(j)[1]};
@@ -246,6 +249,7 @@ public class Logik {
         }
         return 0;
     }
+    
     //Hilfsmethoden
     private void spielerwechsel() {
         spielerSchwarz.setAmZug(!spielerSchwarz.istAmZug());

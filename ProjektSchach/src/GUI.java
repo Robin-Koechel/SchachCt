@@ -6,15 +6,12 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -22,8 +19,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.event.MenuEvent;
-import javax.swing.event.MenuListener;
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -55,7 +50,7 @@ public class GUI extends JFrame implements ActionListener{
     
     //modi
     private boolean pvp = false;
-    private boolean pve = false;
+    private boolean pve = true;
     private boolean online = false;
     
     
@@ -84,22 +79,31 @@ public class GUI extends JFrame implements ActionListener{
                 System.exit(1);
             }
             if (action.equals("Player vs. Player")) {
+                logik.logikReset();
+                zeichneFiguren();
+                zeichneHintergrund();
+                
                 pvp = true;
                 pve = false;
                 online = false;
             }
             if (action.equals("Player vs. AI")) {
+                logik.logikReset();
+                zeichneFiguren();
+                zeichneHintergrund();
+                
                 pvp = false;
                 pve = true;
                 online = false;
             }
             if (action.equals("Online")) {
+                logik.logikReset();
+                zeichneFiguren();
+                zeichneHintergrund();
+                
                 pvp = false;
                 pve = false;
                 online = true;
-            }
-            if(action.equals("Links")){
-                
             }
             
             if(action.equals("Github")){
@@ -120,7 +124,7 @@ public class GUI extends JFrame implements ActionListener{
     
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(pvp){
+        
             for (int i = 0; i < anzahlZeilenSpalten; i++) {
                 for (int j = 0; j < anzahlZeilenSpalten; j++) {
                     if (felder[i][j] == e.getSource()) {
@@ -139,6 +143,7 @@ public class GUI extends JFrame implements ActionListener{
                     }
                 }
             }
+        if(pvp){
             if(startKoordinate != null && zielKoordinate != null){
                 try {
                     logik.zugSetzen(startKoordinate, zielKoordinate,logik.getLstFiguren());
@@ -155,7 +160,39 @@ public class GUI extends JFrame implements ActionListener{
             }
             
             //https://www.youtube.com/watch?v=U4ogK0MIzqk
-        }  
+        }
+        if(pve){
+            boolean figurIstSchwarz = false;
+            for (int i = 0; i < logik.getLstFiguren().size(); i++) {
+                Figur figur = (Figur) logik.getLstFiguren().get(i);
+                if(figur.getPosX() == startKoordinate[0] && figur.getPosY() == startKoordinate[1]){
+                    if(figur.istWeiß()==false)figurIstSchwarz=true;break;
+                }
+            }
+             
+            if(startKoordinate != null && zielKoordinate != null){
+                if(figurIstSchwarz){
+                    try {
+                        logik.zugSetzen(startKoordinate, zielKoordinate,logik.getLstFiguren());
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(rootPane, ex);
+                        Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    zeichneHintergrund();
+                    zeichneFiguren();
+
+                   startKoordinate = null;
+                   zielKoordinate = null;
+                   startknopfGedrückt = false;
+                   //KI part
+                   logik.miniMax(2, false);
+                   
+                }else{
+                    JOptionPane.showMessageDialog(rootPane, "diese Figur wird vom Pc gesetzt");
+                }
+                
+            }
+        }
     }
     private void showMenuDemo(){
         //create a menu bar
