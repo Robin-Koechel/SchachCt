@@ -185,7 +185,7 @@ public class GUI extends JFrame implements ActionListener{
                    zielKoordinate = null;
                    startknopfGedrückt = false;
                    //KI part
-                   logik.miniMax(2, false);
+                   logik.miniMax(2, true);
                    
                 }else{
                     JOptionPane.showMessageDialog(rootPane, "diese Figur wird vom Pc gesetzt");
