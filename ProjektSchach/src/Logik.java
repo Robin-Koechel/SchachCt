@@ -30,6 +30,7 @@ public class Logik {
     private ArrayList<Figur> lstToteFiguren = new ArrayList<Figur>();
     
     private int[] tempPos={0,0};
+    private int[] besteZielPos={0,0};
     
     private Spieler spielerWeiß;
     private Spieler spielerSchwarz;
@@ -248,10 +249,15 @@ public class Logik {
     }
     public int miniMax2(Figur fig, int tiefe, boolean istMaxFarbeWeiß){
         //https://www.youtube.com/watch?v=l-hh51ncgDI
+        int maxEval = -999999999;
+        int minEval = 999999999;
         if(tiefe == 0){
-            System.out.println(punkteWeiß);
-            System.out.println(punkteSchwarz);
-            return punkteWeiß;
+            if(istMaxFarbeWeiß){
+                return maxEval;
+            }else{
+                return minEval;
+            }
+           
         }
         Figur figur = fig;
         int[] currentPos =new int[2];
@@ -260,27 +266,34 @@ public class Logik {
         currentPos[1]=fig.getPosY();
 
         if(istMaxFarbeWeiß){
-            int maxEval = -999999999;
+            
             for (int i = 0; i < fig.getPossitionsAbleToMove(tempLstFiguren).size(); i++) {
                 fig.setPosX(fig.getPossitionsAbleToMove(tempLstFiguren).get(i)[0]);
                 fig.setPosY(fig.getPossitionsAbleToMove(tempLstFiguren).get(i)[1]);
-                int eval = miniMax2(figur, tiefe-1, false);
+                maxEval = getWertEinesFeldes(tempPos);
+                int eval = miniMax2(figur, tiefe-1, !istMaxFarbeWeiß);
                 fig.setPosX(currentPos[0]);
                 fig.setPosY(currentPos[1]);
-                
-                maxEval = Math.max(eval, maxEval);
+                if(eval > maxEval){
+                    besteZielPos[0]=fig.getPossitionsAbleToMove(tempLstFiguren).get(i)[0];
+                    besteZielPos[0]=fig.getPossitionsAbleToMove(tempLstFiguren).get(i)[1];
+                }
             }
             return maxEval;
         }else{
-            int minEval = 999999999;
+            
             for (int i = 0; i < fig.getPossitionsAbleToMove(tempLstFiguren).size(); i++) {
                 fig.setPosX(fig.getPossitionsAbleToMove(tempLstFiguren).get(i)[0]);
                 fig.setPosY(fig.getPossitionsAbleToMove(tempLstFiguren).get(i)[1]);
-                int eval = miniMax2(figur, tiefe-1, true);
+                minEval = -getWertEinesFeldes(tempPos);
+                int eval = miniMax2(figur, tiefe-1, !istMaxFarbeWeiß);
                 fig.setPosX(currentPos[0]);
                 fig.setPosY(currentPos[1]);
                 
-                minEval = Math.min(eval, minEval);
+                if(eval < minEval){
+                    besteZielPos[0]=fig.getPossitionsAbleToMove(tempLstFiguren).get(i)[0];
+                    besteZielPos[0]=fig.getPossitionsAbleToMove(tempLstFiguren).get(i)[1];
+                }
             }
             return minEval;
         }
@@ -365,6 +378,26 @@ public class Logik {
         punkteSchwarz = 0;
         punkteWeiß = 0;
     }
+    public boolean kannFigurSichBewegen(Figur fig){
+        tempLstFiguren = lstFiguren;
+        int[] startFeld= new int[2];
+        int[] zielFeld= new int[2];
+        boolean res = false;
+        startFeld[0] = fig.getPosX();
+        startFeld[1] = fig.getPosY();
+        for (int i = 0; i < fig.getPossitionsAbleToMove(lstFiguren).size(); i++) {
+            zielFeld[0]=fig.getPossitionsAbleToMove(lstFiguren).get(i)[0];
+            zielFeld[0]=fig.getPossitionsAbleToMove(lstFiguren).get(i)[1];
+            
+            try {
+                zugSetzen(startFeld, zielFeld, tempLstFiguren);
+                res = true;
+                break;
+            } catch (Exception ex) {              
+            }
+        }
+        return res;
+    }
     
     //getter und setter
     public ArrayList getPossibleMoves(boolean istSeiteWeiß){
@@ -409,5 +442,8 @@ public class Logik {
         }else{
             return getFigurAufFeld(zielfeld).getWert();
         }
+    }
+    public int[] getBesteZielPos(){
+        return besteZielPos;
     }
 }

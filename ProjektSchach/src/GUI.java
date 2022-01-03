@@ -19,16 +19,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
-/**
- *
- * @author Robin
- */
+
 public class GUI extends JFrame implements ActionListener{
     private JPanel panel;
     private JButton[][] felder = new JButton[8][8];
@@ -171,6 +163,8 @@ public class GUI extends JFrame implements ActionListener{
             }
              
             if(startKoordinate != null && zielKoordinate != null){
+                int[] zielPos = new int[2];
+                int[] startPos = new int[2];
                 if(figurIstSchwarz){
                     try {
                         logik.zugSetzen(startKoordinate, zielKoordinate,logik.getLstFiguren());
@@ -181,17 +175,37 @@ public class GUI extends JFrame implements ActionListener{
                     zeichneHintergrund();
                     zeichneFiguren();
 
-                   startKoordinate = null;
-                   zielKoordinate = null;
-                   startknopfGedrückt = false;
-                   //KI part
-                   logik.miniMax(2, true);
-                   
+                    startKoordinate = null;
+                    zielKoordinate = null;
+                    startknopfGedrückt = false;
+                    //KI part
+                    ArrayList<Figur> lstFig = logik.getLstFiguren();
+                    int besterWert = 0;
+
+                    for (int i = 0; i < lstFig.size(); i++) {
+                        int ergebnisMiniMax = 0;                       
+                        
+                        if(logik.kannFigurSichBewegen(lstFig.get(i))){
+                            continue;
+                        }else
+                            ergebnisMiniMax = logik.miniMax2(lstFig.get(i), 1, false);
+                            if(ergebnisMiniMax > besterWert){
+                                zielPos = logik.getBesteZielPos();
+                                startPos[0] = lstFig.get(i).getPosX();
+                                startPos[1] = lstFig.get(i).getPosY();
+                            }
+                        }
+                    }
+                    try {
+                        logik.zugSetzen(startPos, zielPos, logik.getLstFiguren());
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(rootPane, "Fehler bei KI Feld setzen!!");
+                        Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }else{
                     JOptionPane.showMessageDialog(rootPane, "diese Figur wird vom Pc gesetzt");
                 }
-                
-            }
+
         }
     }
     private void showMenuDemo(){
