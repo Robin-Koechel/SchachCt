@@ -2,6 +2,7 @@ import Figuren.Figur;
 import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -10,20 +11,29 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 
 public class GUI extends JFrame implements ActionListener{
     private JPanel panel;
     private JButton[][] felder = new JButton[8][8];
+    
+    private JLabel lbl1;
+    private JTextField txfName;
+    private JButton btnFertig;
     //Text shit
     private String textFont = "Sans";
     private int textGröße = 60;
@@ -42,13 +52,15 @@ public class GUI extends JFrame implements ActionListener{
     
     //modi
     private boolean pvp = false;
-    private boolean pve = true;
-    private boolean online = false;
-    
+    private boolean pve = false;
+    private boolean online = true;
+
     
     public GUI(){
        logik = new Logik();
-       initComponents();
+       
+       userInformation();
+       //initComponents();
        
        startknopfGedrückt = false;
     }
@@ -96,6 +108,7 @@ public class GUI extends JFrame implements ActionListener{
                 pvp = false;
                 pve = false;
                 online = true;
+                
             }
             
             if(action.equals("Github")){
@@ -207,6 +220,50 @@ public class GUI extends JFrame implements ActionListener{
                 }
 
         }
+        if(online){
+            Datenbank db = logik.getDb();
+
+            if(startKoordinate != null && zielKoordinate != null){
+                
+                if(db.datenbankIstLeer()){
+                    System.out.println("Datenbank ist leer");
+                    onlineFlow(db, logik.getSpielerSchwarz(), "schwarz");
+                }else{//Spiel hat begonnen -> DB ist nicht leer
+                    System.out.println("Datenbank ist NICHT leer");
+                    if(!db.seitenSindVerteilt()){//sei weiß bzw. uploade als weiß
+                        //hole Daten
+                        System.out.println(db.getNeustenSpielstand());
+                        logik.listeDekodieren(db.getNeustenSpielstand());
+                        
+                        onlineFlow(db, logik.getSpielerWeiß(), "weiß");
+                    }else{
+                        System.out.println(db.getNeustenSpielstand());
+                        logik.listeDekodieren(db.getNeustenSpielstand());
+                        
+                        if(db.istFigurAmZug("weiß")){
+                            onlineFlow(db, logik.getSpielerWeiß(), "weiß");
+                        }else{
+                            onlineFlow(db, logik.getSpielerSchwarz(), "schwarz");
+                        }
+                    }
+                }
+                
+                //************************************
+                try {    
+                    logik.zugSetzen(startKoordinate, zielKoordinate,logik.getLstFiguren());
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(rootPane, ex);
+                    Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                zeichneHintergrund();
+                zeichneFiguren();
+                
+               startKoordinate = null;
+               zielKoordinate = null;
+               startknopfGedrückt = false;
+               //************************************
+            }
+        }
     }
     private void showMenuDemo(){
         //create a menu bar
@@ -309,6 +366,40 @@ public class GUI extends JFrame implements ActionListener{
         zeichneHintergrund();
         zeichneFiguren();
     }
+    private void userInformation(){
+        panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        
+        this.add(panel);
+        
+        
+        lbl1 = new JLabel("Wie heißt du?");
+        txfName = new JTextField();
+        btnFertig = new JButton("fertig!");
+         
+        panel.add(lbl1);
+        panel.add(txfName);
+        panel.add(btnFertig);
+        
+        this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        this.pack();
+        
+        btnFertig.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                logik.getSpielerSchwarz().setName(txfName.getText());
+                
+                lbl1.setVisible(false);
+                txfName.setVisible(false);
+                txfName.setEditable(false);
+                txfName.setEnabled(false);
+                btnFertig.setVisible(false);
+                btnFertig.setEnabled(false);
+                
+                initComponents();
+            }
+        });
+    }
     private void zeichneHintergrund() {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j+=2) {
@@ -337,5 +428,21 @@ public class GUI extends JFrame implements ActionListener{
                 felder[y][x].setText(lstFiguren.get(k).getBuchstabe());
             }
         }
-    } 
+    }
+    private void onlineFlow(Datenbank db, Spieler sp, String farbe){
+        try {    
+            logik.zugSetzen(startKoordinate, zielKoordinate,logik.getLstFiguren());
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(rootPane, ex);
+            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        zeichneHintergrund();
+        zeichneFiguren();
+
+        startKoordinate = null;
+        zielKoordinate = null;
+        startknopfGedrückt = false;
+        System.out.println(logik.listeKodieren(logik.getLstFiguren()));
+        db.uploadSpielstand(sp, logik.listeKodieren(logik.getLstFiguren()), farbe);
+    }
 }

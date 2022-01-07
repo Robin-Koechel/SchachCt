@@ -38,6 +38,8 @@ public class Logik {
     private int punkteWeiß;
     private int punkteSchwarz;
     
+    private Datenbank db;
+    
     public Logik(){  
         initFiguren();
         tempLstFiguren = lstFiguren;
@@ -47,6 +49,8 @@ public class Logik {
         
         punkteSchwarz = 0;
         punkteWeiß = 0;
+        
+        db = new Datenbank();
     }
     //wichtige Methoden
     public void zugSetzen(int[]startKoordinate,int[]zielKoordinate, ArrayList<Figur> lstFiguren)throws Exception{
@@ -280,6 +284,7 @@ public class Logik {
                 }
             }
             return maxEval;
+            
         }else{
             
             for (int i = 0; i < fig.getPossitionsAbleToMove(tempLstFiguren).size(); i++) {
@@ -309,6 +314,7 @@ public class Logik {
         }
     }
     
+    
     //Hilfsmethoden
     private void spielerwechsel() {
         spielerSchwarz.setAmZug(!spielerSchwarz.istAmZug());
@@ -323,8 +329,8 @@ public class Logik {
         lstFiguren.add(new Turm(true, 7, 0,"♖",50,false));
         lstFiguren.add(new Springer(true, 1, 0,"♘",30, false));
         lstFiguren.add(new Springer(true, 6, 0,"♘",30, false));
-        lstFiguren.add(new Läufer(true, 2, 0,"♗",30, false));
-        lstFiguren.add(new Läufer(true, 5, 0,"♗",30, false));
+        lstFiguren.add(new Läufer(true, 2, 0,"♗",40, false));
+        lstFiguren.add(new Läufer(true, 5, 0,"♗",40, false));
         lstFiguren.add(new König(true, 3, 0,"♔",900, true));
         lstFiguren.add(new Dame(true, 4, 0,"♕",100, false));
         
@@ -336,8 +342,8 @@ public class Logik {
         lstFiguren.add(new Turm(false, 7, 7,"♜",50, false));
         lstFiguren.add(new Springer(false, 1, 7,"♞",30, false));
         lstFiguren.add(new Springer(false, 6, 7,"♞",30, false));
-        lstFiguren.add(new Läufer(false, 2, 7,"♝",30, false));
-        lstFiguren.add(new Läufer(false, 5, 7,"♝",30, false));
+        lstFiguren.add(new Läufer(false, 2, 7,"♝",40, false));
+        lstFiguren.add(new Läufer(false, 5, 7,"♝",40, false));
         lstFiguren.add(new König(false, 3, 7,"♚",900, true));
         lstFiguren.add(new Dame(false, 4, 7,"♛",100, false));
         
@@ -396,7 +402,133 @@ public class Logik {
             } catch (Exception ex) {              
             }
         }
+        tempLstFiguren = lstFiguren;
         return res;
+    }
+    public String listeKodieren(ArrayList<Figur> lst){
+        //leeres Feld 0
+        //bauer 1 und wenn schon bewegt 2
+        //Turm 3
+        //Pferd 4
+        //Läufer 5
+        //Dame 6
+        //König 7
+        String res = "";
+        
+        int counterX = 0;
+        int counterY = 0;
+        boolean istFeld = false;
+        
+        for (int i = 0; i < 64; i++) {
+            
+        
+            for (int k = 0; k < lst.size(); k++) {//Alle Figs überprüfen
+                if(lst.get(k).getPosX() == counterX && lst.get(k).getPosY() == counterY){
+                    switch(lst.get(k).getWert()){
+                        case 10://Bauer
+                            if(lst.get(k).getAnzahlGesetzt()>0){
+                                res += "2";
+                            }else{
+                                res +=  "1";
+                            }
+                            istFeld = true;
+                            break;
+                        case 50://Turm
+                            res +=  "3";
+                            istFeld = true;
+                            break;
+                        case 30://Pferd
+                            res +=  "4";
+                            istFeld = true;
+                            break;
+                        case 40://Läufer
+                            res +=  "5";
+                            istFeld = true;
+                            break;
+                        case 900://König
+                            res +=  "6";
+                            istFeld = true;
+                            break;
+                        case 100://Dame
+                            res +=  "7";
+                            istFeld = true;
+                            break;
+                    }
+                }
+            }
+            
+            if(!istFeld){
+                res+="0";
+            }
+            istFeld = false;
+            counterX++;
+            
+            if(counterX == 8){
+                counterX = 0;
+                counterY ++;
+                if(counterY == 8){
+                    counterY = 0;
+                }
+            }
+        }
+        return res;
+    }
+    public void listeDekodieren(String code){
+        resetLstFiguren();
+
+        int[] lst = new int[code.length()];
+
+        for (int i = 0; i < code.length(); i++) {
+            lst[i] = Integer.parseInt(code.substring(i, i+1));
+        }
+        
+        int counterX = 0;
+        int counterY = 0;
+        
+        for (int i = 0; i < lst.length; i++) {
+            switch(lst[i]){
+                case 0://null
+
+                    break;
+                case 1://Bauer
+                    lstFiguren.add(new Bauer(true, counterX, counterY,"♙",10,false));
+                    break;
+                case 2://Bauer schon mal gesetzt
+                    Bauer b = new Bauer(true, counterX, counterY,"♙",10,false);
+                    lstFiguren.add(b);
+                    b.setAnzahlGesetzt(2);
+                    break;
+                case 3://Turm
+                    lstFiguren.add(new Turm(true, counterX, counterY,"♖",50,false));
+                    break;
+                case 4://Pferd
+                    lstFiguren.add(new Springer(false, counterX, counterY,"♞",30, false));
+                    break;
+                case 5://Läufer
+                    lstFiguren.add(new Läufer(false, counterX, counterY,"♝",40, false));
+                    break;
+                case 6://Dame
+                    lstFiguren.add(new Dame(true, counterX, counterY,"♕",100, false));
+                    break;
+                case 7://König
+                    System.out.println(counterX+"   "+counterY);
+                    lstFiguren.add(new König(false, counterX, counterY,"♚",900, true));
+                    break;
+            }
+            counterX++;
+            if(counterX == 8){
+                counterX = 0;
+                counterY ++;
+                if(counterY == 8){
+                    counterY = 0;
+                }
+            }
+        }
+    }
+    public void resetLstFiguren(){
+        for (int i = 0; i < lstFiguren.size(); i++) {
+            lstFiguren.remove(i);
+        }
     }
     
     //getter und setter
@@ -446,4 +578,14 @@ public class Logik {
     public int[] getBesteZielPos(){
         return besteZielPos;
     }
+    public Datenbank getDb() {
+        return db;
+    }
+    public Spieler getSpielerWeiß() {
+        return spielerWeiß;
+    }
+    public Spieler getSpielerSchwarz() {
+        return spielerSchwarz;
+    }
+    
 }

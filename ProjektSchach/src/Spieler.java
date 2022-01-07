@@ -14,6 +14,7 @@ public class Spieler {
     private boolean amZug;
     private boolean gewonnen;
     private int zaehlerVerloreneFiguren;
+    private String name;
     
     public Spieler(boolean istSeiteWeiß, boolean amZug){
         //weiß bewginnt, schwarz gewinnt
@@ -23,6 +24,10 @@ public class Spieler {
         zaehlerVerloreneFiguren = 0;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+    
     public boolean istAmZug() {
         return amZug;
     }
@@ -43,6 +48,10 @@ public class Spieler {
     }
     public boolean getSeite() {
         return istSeiteWeiß;
+    }
+
+    public String getName() {
+        return name;
     }
     
     
