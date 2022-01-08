@@ -25,7 +25,7 @@ public class Datenbank {
         }
     }
     
-    public String getNeustenSpielstand(){
+    public String getNeustenFenStand(){
         ArrayList<String> listeStände = new ArrayList<>();
         try {
             Statement statement = verbindung.createStatement();
@@ -68,10 +68,19 @@ public class Datenbank {
             Logger.getLogger(Datenbank.class.getName()).log(Level.SEVERE, null, ex);
         } 
     }
-    public void flushSpielstand(){
+    public void uploadSpielstand(String value,String farbe){
         try {
             Statement statement = verbindung.createStatement();
-            statement.executeUpdate("DELETE FROM currentmatch WHERE Spielstand != '';");
+            statement.executeUpdate("INSERT INTO currentmatch (Spieler,Spielstand, Farbe) VALUES ('-' , '"+value+"', '"+farbe+"');");
+        } catch (SQLException ex) {
+            Logger.getLogger(Datenbank.class.getName()).log(Level.SEVERE, null, ex);
+        } 
+    }
+    public void flushSpielstand(FenNotation fen, Logik logik){
+        try {
+            Statement statement = verbindung.createStatement();
+            statement.executeUpdate("TRUNCATE TABLE currentmatch;");
+            uploadSpielstand(fen.getFenNotation(logik.getLstFiguren(), "TPLKQLPT/AAAAAAAA/00000000/00000000/00000000/00000000/aaaaaaaa/tplkqlpt-b-0"), "w");
         } catch (SQLException ex) {
             Logger.getLogger(Datenbank.class.getName()).log(Level.SEVERE, null, ex);
         }

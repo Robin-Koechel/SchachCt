@@ -405,112 +405,81 @@ public class Logik {
         tempLstFiguren = lstFiguren;
         return res;
     }
-    public String listeKodieren(ArrayList<Figur> lst){
-        //leeres Feld 0
-        //bauer 1 und wenn schon bewegt 2
-        //Turm 3
-        //Pferd 4
-        //Läufer 5
-        //Dame 6
-        //König 7
-        String res = "";
-        
-        int counterX = 0;
-        int counterY = 0;
-        boolean istFeld = false;
-        
-        for (int i = 0; i < 64; i++) {
-            
-        
-            for (int k = 0; k < lst.size(); k++) {//Alle Figs überprüfen
-                if(lst.get(k).getPosX() == counterX && lst.get(k).getPosY() == counterY){
-                    switch(lst.get(k).getWert()){
-                        case 10://Bauer
-                            if(lst.get(k).getAnzahlGesetzt()>0){
-                                res += "2";
-                            }else{
-                                res +=  "1";
-                            }
-                            istFeld = true;
-                            break;
-                        case 50://Turm
-                            res +=  "3";
-                            istFeld = true;
-                            break;
-                        case 30://Pferd
-                            res +=  "4";
-                            istFeld = true;
-                            break;
-                        case 40://Läufer
-                            res +=  "5";
-                            istFeld = true;
-                            break;
-                        case 900://König
-                            res +=  "6";
-                            istFeld = true;
-                            break;
-                        case 100://Dame
-                            res +=  "7";
-                            istFeld = true;
-                            break;
-                    }
-                }
-            }
-            
-            if(!istFeld){
-                res+="0";
-            }
-            istFeld = false;
-            counterX++;
-            
-            if(counterX == 8){
-                counterX = 0;
-                counterY ++;
-                if(counterY == 8){
-                    counterY = 0;
-                }
-            }
-        }
-        return res;
-    }
     public void listeDekodieren(String code){
         resetLstFiguren();
-
-        int[] lst = new int[code.length()];
-
-        for (int i = 0; i < code.length(); i++) {
-            lst[i] = Integer.parseInt(code.substring(i, i+1));
+        for (int i = 0; i < lstFiguren.size(); i++) {
+            System.out.println(lstFiguren.get(i));
         }
+        
+        
+        code = code.replaceAll("/", "");
+        code = code.substring(0, code.lastIndexOf("-")-2);
+        
+        
+         // Creating array of string length
+        char[] ch = new char[code.length()];
+  
+        // Copy character by character into array
+        for (int i = 0; i < code.length(); i++) {
+            ch[i] = code.charAt(i);
+        }
+
         
         int counterX = 0;
         int counterY = 0;
         
-        for (int i = 0; i < lst.length; i++) {
-            switch(lst[i]){
-                case 0://null
-
+        for (int i = 0; i < 64; i++) {
+            switch(ch[i]){
+                case '0'://null
                     break;
-                case 1://Bauer
+                //weiß
+                case 'A'://Bauer
                     lstFiguren.add(new Bauer(true, counterX, counterY,"♙",10,false));
                     break;
-                case 2://Bauer schon mal gesetzt
+                case 'B'://Bauer schon mal gesetzt
                     Bauer b = new Bauer(true, counterX, counterY,"♙",10,false);
                     lstFiguren.add(b);
                     b.setAnzahlGesetzt(2);
                     break;
-                case 3://Turm
+                case 'T'://Turm
                     lstFiguren.add(new Turm(true, counterX, counterY,"♖",50,false));
                     break;
-                case 4://Pferd
-                    lstFiguren.add(new Springer(false, counterX, counterY,"♞",30, false));
+                case 'P'://Pferd
+                    lstFiguren.add(new Springer(true, counterX, counterY,"♘",30, false));
                     break;
-                case 5://Läufer
-                    lstFiguren.add(new Läufer(false, counterX, counterY,"♝",40, false));
+                case 'L'://Läufer
+                    lstFiguren.add(new Läufer(true, counterX, counterY,"♗",40, false));
                     break;
-                case 6://Dame
+                case 'Q'://Dame
                     lstFiguren.add(new Dame(true, counterX, counterY,"♕",100, false));
                     break;
-                case 7://König
+                case 'K'://König
+                    System.out.println(counterX+"   "+counterY);
+                    lstFiguren.add(new König(true, counterX, counterY,"♔",900, true));
+                    break;
+                    
+                //schwarz
+                case 'a'://Bauer
+                    lstFiguren.add(new Bauer(false, counterX, counterY,"♟",10,false));
+                    break;
+                case 'b'://Bauer schon mal gesetzt
+                    Bauer bb = new Bauer(false, counterX, counterY,"♟",10,false);
+                    lstFiguren.add(bb);
+                    bb.setAnzahlGesetzt(2);
+                    break;
+                case 't'://Turm
+                    lstFiguren.add(new Turm(false, counterX, counterY,"♜",50,false));
+                    break;
+                case 'p'://Pferd
+                    lstFiguren.add(new Springer(false, counterX, counterY,"♞",30, false));
+                    break;
+                case 'l'://Läufer
+                    lstFiguren.add(new Läufer(false, counterX, counterY,"♝",40, false));
+                    break;
+                case 'q'://Dame
+                    lstFiguren.add(new Dame(false, counterX, counterY,"♛",100, false));
+                    break;
+                case 'k'://König
                     System.out.println(counterX+"   "+counterY);
                     lstFiguren.add(new König(false, counterX, counterY,"♚",900, true));
                     break;
@@ -529,6 +498,7 @@ public class Logik {
         for (int i = 0; i < lstFiguren.size(); i++) {
             lstFiguren.remove(i);
         }
+        lstFiguren.clear();
     }
     
     //getter und setter

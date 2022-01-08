@@ -54,7 +54,8 @@ public class GUI extends JFrame implements ActionListener{
     private boolean pvp = false;
     private boolean pve = false;
     private boolean online = true;
-
+    
+    FenNotation fen = new FenNotation();
     
     public GUI(){
        logik = new Logik();
@@ -62,12 +63,16 @@ public class GUI extends JFrame implements ActionListener{
        userInformation();
        //initComponents();
        
+       System.out.println(fen.getFenNotation(logik.getLstFiguren(), "TPLKQLPT/BBBBBBBB/00000000/00000000/00000000/00000000/bbbbbbbb/tplkqlpt-b-0"));
+       
        startknopfGedrückt = false;
     }
     class MenuItemListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {            
-            System.out.println(e.getActionCommand() + " JMenuItem clicked.");
+            zeichneHintergrund();
+            zeichneFiguren();
+            
             String action = e.getActionCommand();
             if (action.equals("New Game")) {
                 logik.logikReset();
@@ -124,30 +129,35 @@ public class GUI extends JFrame implements ActionListener{
                 }
                 
             }
+            if(action.equals("DB zurücksetzen")){
+                System.out.println("DB");
+                Datenbank db = logik.getDb();
+                db.flushSpielstand(fen, logik);
+            }
         }    
     }
     
     @Override
     public void actionPerformed(ActionEvent e) {
         
-            for (int i = 0; i < anzahlZeilenSpalten; i++) {
-                for (int j = 0; j < anzahlZeilenSpalten; j++) {
-                    if (felder[i][j] == e.getSource()) {
-                        if(!startknopfGedrückt){
-                            startKoordinate = new int[]{j,i};
-                            startknopfGedrückt = true;
-                            
+        for (int i = 0; i < anzahlZeilenSpalten; i++) {
+            for (int j = 0; j < anzahlZeilenSpalten; j++) {
+                if (felder[i][j] == e.getSource()) {
+                    if(!startknopfGedrückt){
+                        startKoordinate = new int[]{j,i};
+                        startknopfGedrückt = true;
+
+                    }else{
+                        if(startKoordinate == new int[]{j,i}){
+                            felder[i][j].setEnabled(true);
+                            startKoordinate = null;
                         }else{
-                            if(startKoordinate == new int[]{j,i}){
-                                felder[i][j].setEnabled(true);
-                                startKoordinate = null;
-                            }else{
-                                zielKoordinate = new int[]{j,i};
-                            }
+                            zielKoordinate = new int[]{j,i};
                         }
                     }
                 }
             }
+        }
         if(pvp){
             if(startKoordinate != null && zielKoordinate != null){
                 try {
@@ -222,25 +232,32 @@ public class GUI extends JFrame implements ActionListener{
         }
         if(online){
             Datenbank db = logik.getDb();
+            
+            String fen = db.getNeustenFenStand();
+            logik.listeDekodieren(fen);
+            
+            zeichneHintergrund();
+            zeichneFiguren();
+                
 
             if(startKoordinate != null && zielKoordinate != null){
                 
                 if(db.datenbankIstLeer()){
                     System.out.println("Datenbank ist leer");
-                    onlineFlow(db, logik.getSpielerSchwarz(), "schwarz");
+                    
+                    db.uploadSpielstand(this.fen.getFenNotation(logik.getLstFiguren(), "TPLKQLPT/AAAAAAAA/00000000/00000000/00000000/00000000/aaaaaaaa/tplkqlpt-b-0"), "w");
                 }else{//Spiel hat begonnen -> DB ist nicht leer
                     System.out.println("Datenbank ist NICHT leer");
                     if(!db.seitenSindVerteilt()){//sei weiß bzw. uploade als weiß
                         //hole Daten
-                        System.out.println(db.getNeustenSpielstand());
-                        logik.listeDekodieren(db.getNeustenSpielstand());
+                        System.out.println(db.getNeustenFenStand());
+                        logik.listeDekodieren(db.getNeustenFenStand());
                         
                         onlineFlow(db, logik.getSpielerWeiß(), "weiß");
                     }else{
-                        System.out.println(db.getNeustenSpielstand());
-                        logik.listeDekodieren(db.getNeustenSpielstand());
                         
-                        if(db.istFigurAmZug("weiß")){
+                        
+                        if(this.fen.weißAmZug(fen)){
                             onlineFlow(db, logik.getSpielerWeiß(), "weiß");
                         }else{
                             onlineFlow(db, logik.getSpielerSchwarz(), "schwarz");
@@ -249,12 +266,12 @@ public class GUI extends JFrame implements ActionListener{
                 }
                 
                 //************************************
-                try {    
-                    logik.zugSetzen(startKoordinate, zielKoordinate,logik.getLstFiguren());
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(rootPane, ex);
-                    Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
-                }
+//                try {    
+//                    logik.zugSetzen(startKoordinate, zielKoordinate,logik.getLstFiguren());
+//                } catch (Exception ex) {
+//                    JOptionPane.showMessageDialog(rootPane, ex);
+//                    Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+//                }
                 zeichneHintergrund();
                 zeichneFiguren();
                 
@@ -284,6 +301,9 @@ public class GUI extends JFrame implements ActionListener{
 
         JMenuItem saveMenuItem = new JMenuItem("Save");
         saveMenuItem.setActionCommand("Save");
+        
+        JMenuItem resetOnlineDbMenuItem = new JMenuItem("DB zurücksetzen");
+        resetOnlineDbMenuItem.setActionCommand("DB zurücksetzen");
 
         JMenuItem exitMenuItem = new JMenuItem("Exit");
         exitMenuItem.setActionCommand("Exit");
@@ -306,6 +326,7 @@ public class GUI extends JFrame implements ActionListener{
         newGameMenuItem.addActionListener(menuItemListener);
         openMenuItem.addActionListener(menuItemListener);
         saveMenuItem.addActionListener(menuItemListener);
+        resetOnlineDbMenuItem.addActionListener(menuItemListener);
         exitMenuItem.addActionListener(menuItemListener);
         pvpMenuItem.addActionListener(menuItemListener);
         gitMenuItem.addActionListener(menuItemListener);
@@ -319,6 +340,7 @@ public class GUI extends JFrame implements ActionListener{
         fileMenu.add(newGameMenuItem);
         fileMenu.add(openMenuItem);
         fileMenu.add(saveMenuItem);
+        fileMenu.add(resetOnlineDbMenuItem);
         fileMenu.addSeparator();
         fileMenu.add(exitMenuItem);        
       
@@ -442,7 +464,8 @@ public class GUI extends JFrame implements ActionListener{
         startKoordinate = null;
         zielKoordinate = null;
         startknopfGedrückt = false;
-        System.out.println(logik.listeKodieren(logik.getLstFiguren()));
-        db.uploadSpielstand(sp, logik.listeKodieren(logik.getLstFiguren()), farbe);
+        
+        //System.out.println(fen.getFenNotation(logik.getLstFiguren(), db.getNeustenFenStand()));
+        db.uploadSpielstand(sp, fen.getFenNotation(logik.getLstFiguren(), db.getNeustenFenStand()), farbe);
     }
 }
