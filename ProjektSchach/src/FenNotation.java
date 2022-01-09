@@ -18,11 +18,10 @@ public class FenNotation {
     public String getFenNotation(ArrayList<Figur> lstFiguren, String fenAlt){
         return figurenstellung(lstFiguren)+"-"+zugrecht(fenAlt)+"-"+nummerNächsterZug(fenAlt);
     }
+    
     private String figurenstellung(ArrayList<Figur> lst) {
         String res = "";
-        
-        int counterX = 0;
-        int counterY = 0;
+
         boolean istFeld = false;
         
         for (int i = 0; i < 8; i++) {//Y

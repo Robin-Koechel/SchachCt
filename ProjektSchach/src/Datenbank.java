@@ -76,7 +76,7 @@ public class Datenbank {
             Logger.getLogger(Datenbank.class.getName()).log(Level.SEVERE, null, ex);
         } 
     }
-    public void flushSpielstand(FenNotation fen, Logik logik){
+    public void purgeSpielstand(FenNotation fen, Logik logik){
         try {
             Statement statement = verbindung.createStatement();
             statement.executeUpdate("TRUNCATE TABLE currentmatch;");

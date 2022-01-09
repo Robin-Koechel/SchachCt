@@ -406,11 +406,7 @@ public class Logik {
         return res;
     }
     public void listeDekodieren(String code){
-        resetLstFiguren();
-        for (int i = 0; i < lstFiguren.size(); i++) {
-            System.out.println(lstFiguren.get(i));
-        }
-        
+        resetLstFiguren();      
         
         code = code.replaceAll("/", "");
         code = code.substring(0, code.lastIndexOf("-")-2);
@@ -502,6 +498,17 @@ public class Logik {
     }
     public void dbZugrecht(){
         
+    }
+    public String reverseFen(String fen){
+        String res = "";
+        
+        String substring1 = fen.substring(0,71);
+        String substring2 = fen.substring(71);
+        substring1 = new StringBuffer(substring1).reverse().toString();
+        
+        res = substring1 + substring2;
+        
+        return res;
     }
     
     //getter und setter

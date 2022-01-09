@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Timer;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -69,7 +70,7 @@ public class GUI extends JFrame implements ActionListener{
        userInformation();
        //initComponents();
        
-       System.out.println(fen.getFenNotation(logik.getLstFiguren(), "TPLKQLPT/BBBBBBBB/00000000/00000000/00000000/00000000/bbbbbbbb/tplkqlpt-b-0"));
+       //System.out.println(fen.getFenNotation(logik.getLstFiguren(), "TPLKQLPT/BBBBBBBB/00000000/00000000/00000000/00000000/bbbbbbbb/tplkqlpt-b-0"));
        
        startknopfGedrückt = false;
     }
@@ -88,7 +89,14 @@ public class GUI extends JFrame implements ActionListener{
             }
             if (action.equals("Open")) {
             }
-            if (action.equals("Save")) {
+            if (action.equals("Refresh DB")) {
+                db = logik.getDb();
+                
+                String fen = db.getNeustenFenStand();
+                logik.listeDekodieren(fen);
+                
+                zeichneHintergrund();
+                zeichneFiguren();
             }
             if (action.equals("Exit")) {
                 System.exit(1);
@@ -137,7 +145,7 @@ public class GUI extends JFrame implements ActionListener{
             }
             if(action.equals("DB zurücksetzen")){
                 Datenbank db = logik.getDb();
-                db.flushSpielstand(fen, logik);
+                db.purgeSpielstand(fen, logik);
             }
         }    
     }
@@ -239,9 +247,14 @@ public class GUI extends JFrame implements ActionListener{
             db = logik.getDb();
             legeFarbeFest();
                  
-            String fen = db.getNeustenFenStand();
-            logik.listeDekodieren(fen);
             
+            
+            String fen = db.getNeustenFenStand();
+            if(farbe.equals("weiß")){
+                logik.listeDekodieren(logik.reverseFen(fen));
+            }else{
+                logik.listeDekodieren(fen);
+            }
             zeichneHintergrund();
             zeichneFiguren();
                 
@@ -258,11 +271,10 @@ public class GUI extends JFrame implements ActionListener{
                     //hole Daten
                     logik.listeDekodieren(db.getNeustenFenStand());//update lstFiguren
                     
-                    if(this.fen.getFarbeAmZug(fen).equals("w") && farbe.equals("schwarz")){//sei schwarz bzw. uploade als schwarz
-                                              
+                    if(this.fen.getFarbeAmZug(fen).equals("w") && farbe.equals("schwarz")){//sei schwarz bzw. uploade als schwarz                   
                         onlineFlow(db, logik.getSpielerSchwarz(), "schwarz");
                     }
-                    else if(this.fen.getFarbeAmZug(fen).equals("s") && farbe.equals("weiß")){
+                    else if(this.fen.getFarbeAmZug(fen).equals("b") && farbe.equals("weiß")){
                         onlineFlow(db, logik.getSpielerWeiß(), "weiß");
                     }else{
                         JOptionPane.showMessageDialog(rootPane, "Noch nicht am Zug!");
@@ -272,9 +284,9 @@ public class GUI extends JFrame implements ActionListener{
                 zeichneHintergrund();
                 zeichneFiguren();
                 
-               startKoordinate = null;
-               zielKoordinate = null;
-               startknopfGedrückt = false;
+                startKoordinate = null;
+                zielKoordinate = null;
+                startknopfGedrückt = false;
             }
         }
     }
@@ -295,8 +307,8 @@ public class GUI extends JFrame implements ActionListener{
         JMenuItem openMenuItem = new JMenuItem("Open");
         openMenuItem.setActionCommand("Open");
 
-        JMenuItem saveMenuItem = new JMenuItem("Save");
-        saveMenuItem.setActionCommand("Save");
+        JMenuItem saveMenuItem = new JMenuItem("Refresh DB");
+        saveMenuItem.setActionCommand("Refresh DB");
         
         JMenuItem resetOnlineDbMenuItem = new JMenuItem("DB zurücksetzen");
         resetOnlineDbMenuItem.setActionCommand("DB zurücksetzen");
@@ -450,19 +462,34 @@ public class GUI extends JFrame implements ActionListener{
     private void onlineFlow(Datenbank db, Spieler sp, String farbe){
         try {    
             logik.zugSetzen(startKoordinate, zielKoordinate,logik.getLstFiguren());
+            
+            zeichneHintergrund();
+            zeichneFiguren();
+
+            startKoordinate = null;
+            zielKoordinate = null;
+            startknopfGedrückt = false;
+
+            //System.out.println(fen.getFenNotation(logik.getLstFiguren(), db.getNeustenFenStand()));
+            
+            ArrayList<Figur> lst = logik.getLstFiguren();
+            //System.out.println(lst);
+            Collections.reverse(lst);
+            //System.out.println(lst);
+            
+//            if(farbe.equals("weiß")){
+                db.uploadSpielstand(sp, fen.getFenNotation(lst, db.getNeustenFenStand()), farbe);
+//            }else{
+//                db.uploadSpielstand(sp, fen.getFenNotation(logik.getLstFiguren(), db.getNeustenFenStand()), farbe);
+//            }
+            
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(rootPane, ex);
             Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
         }
-        zeichneHintergrund();
-        zeichneFiguren();
-
-        startKoordinate = null;
-        zielKoordinate = null;
-        startknopfGedrückt = false;
         
-        //System.out.println(fen.getFenNotation(logik.getLstFiguren(), db.getNeustenFenStand()));
-        db.uploadSpielstand(sp, fen.getFenNotation(logik.getLstFiguren(), db.getNeustenFenStand()), farbe);
+
+        
     }
     private void legeFarbeFest(){
         db = logik.getDb();
