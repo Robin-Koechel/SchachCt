@@ -18,7 +18,6 @@ public class FenNotation {
     public String getFenNotation(ArrayList<Figur> lstFiguren, String fenAlt){
         return figurenstellung(lstFiguren)+"-"+zugrecht(fenAlt)+"-"+nummerNächsterZug(fenAlt);
     }
-
     private String figurenstellung(ArrayList<Figur> lst) {
         String res = "";
         
@@ -108,7 +107,6 @@ public class FenNotation {
         
         return res;
     }
-
     private String zugrecht(String fen) {
         String res = "";
         res = fen.substring(fen.indexOf("-")+1, fen.indexOf("-")+2);
@@ -118,7 +116,6 @@ public class FenNotation {
         
         return res;
     }
-
     private String nummerNächsterZug(String fen) {
         String res = "";
         
@@ -134,5 +131,8 @@ public class FenNotation {
         
         if(temp.equals("w"))return false;
         else return true;
+    }
+    public String getFarbeAmZug(String fen){
+        return fen.substring(fen.indexOf("-")+1, fen.indexOf("-")+2);
     }
 }

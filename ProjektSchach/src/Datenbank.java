@@ -108,32 +108,7 @@ public class Datenbank {
         } catch (SQLException ex) {
             Logger.getLogger(Datenbank.class.getName()).log(Level.SEVERE, null, ex);
         }
-        System.out.println(res);
         return res;
     }
-    public boolean seitenSindVerteilt(){
-        boolean res = false;
-        int counter = 0;
-        try {
-            Statement statement = verbindung.createStatement();
-            ResultSet resSet = statement.executeQuery("SELECT count(*) FROM currentmatch;");
-            ResultSetMetaData metaDaten = resSet.getMetaData();
-            
-            while(resSet.next()){
-                if(resSet.getInt(1)!=1){
-                    counter++;
-                    break;
-                }
-            }
-            
-        } catch (SQLException ex) {
-            Logger.getLogger(Datenbank.class.getName()).log(Level.SEVERE, null, ex);
-        }
         
-        if(counter >2){
-            res = true;
-        }
-        return res;  
-    }
-    
 }

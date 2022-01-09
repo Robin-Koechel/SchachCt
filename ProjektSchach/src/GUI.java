@@ -55,7 +55,13 @@ public class GUI extends JFrame implements ActionListener{
     private boolean pve = false;
     private boolean online = true;
     
+    Datenbank db;
+    
     FenNotation fen = new FenNotation();
+    boolean farbeFestgelegt = false;
+    boolean amZug = false;
+    String farbe = "";
+    
     
     public GUI(){
        logik = new Logik();
@@ -130,7 +136,6 @@ public class GUI extends JFrame implements ActionListener{
                 
             }
             if(action.equals("DB zurücksetzen")){
-                System.out.println("DB");
                 Datenbank db = logik.getDb();
                 db.flushSpielstand(fen, logik);
             }
@@ -231,8 +236,9 @@ public class GUI extends JFrame implements ActionListener{
 
         }
         if(online){
-            Datenbank db = logik.getDb();
-            
+            db = logik.getDb();
+            legeFarbeFest();
+                 
             String fen = db.getNeustenFenStand();
             logik.listeDekodieren(fen);
             
@@ -248,37 +254,27 @@ public class GUI extends JFrame implements ActionListener{
                     db.uploadSpielstand(this.fen.getFenNotation(logik.getLstFiguren(), "TPLKQLPT/AAAAAAAA/00000000/00000000/00000000/00000000/aaaaaaaa/tplkqlpt-b-0"), "w");
                 }else{//Spiel hat begonnen -> DB ist nicht leer
                     System.out.println("Datenbank ist NICHT leer");
-                    if(!db.seitenSindVerteilt()){//sei weiß bzw. uploade als weiß
-                        //hole Daten
-                        System.out.println(db.getNeustenFenStand());
-                        logik.listeDekodieren(db.getNeustenFenStand());
-                        
+                    
+                    //hole Daten
+                    logik.listeDekodieren(db.getNeustenFenStand());//update lstFiguren
+                    
+                    if(this.fen.getFarbeAmZug(fen).equals("w") && farbe.equals("schwarz")){//sei schwarz bzw. uploade als schwarz
+                                              
+                        onlineFlow(db, logik.getSpielerSchwarz(), "schwarz");
+                    }
+                    else if(this.fen.getFarbeAmZug(fen).equals("s") && farbe.equals("weiß")){
                         onlineFlow(db, logik.getSpielerWeiß(), "weiß");
                     }else{
-                        
-                        
-                        if(this.fen.weißAmZug(fen)){
-                            onlineFlow(db, logik.getSpielerWeiß(), "weiß");
-                        }else{
-                            onlineFlow(db, logik.getSpielerSchwarz(), "schwarz");
-                        }
+                        JOptionPane.showMessageDialog(rootPane, "Noch nicht am Zug!");
                     }
                 }
-                
-                //************************************
-//                try {    
-//                    logik.zugSetzen(startKoordinate, zielKoordinate,logik.getLstFiguren());
-//                } catch (Exception ex) {
-//                    JOptionPane.showMessageDialog(rootPane, ex);
-//                    Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
-//                }
+
                 zeichneHintergrund();
                 zeichneFiguren();
                 
                startKoordinate = null;
                zielKoordinate = null;
                startknopfGedrückt = false;
-               //************************************
             }
         }
     }
@@ -467,5 +463,20 @@ public class GUI extends JFrame implements ActionListener{
         
         //System.out.println(fen.getFenNotation(logik.getLstFiguren(), db.getNeustenFenStand()));
         db.uploadSpielstand(sp, fen.getFenNotation(logik.getLstFiguren(), db.getNeustenFenStand()), farbe);
+    }
+    private void legeFarbeFest(){
+        db = logik.getDb();
+        String fen = db.getNeustenFenStand();
+        
+        if(!farbeFestgelegt){
+            if(this.fen.getFarbeAmZug(fen).equals("w")){
+                //Sei schwarz
+                farbe = "schwarz";
+            }else{
+                //Sei weiß
+                farbe = "weiß";
+            }
+        }
+        farbeFestgelegt = true;
     }
 }

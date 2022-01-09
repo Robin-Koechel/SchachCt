@@ -454,7 +454,7 @@ public class Logik {
                     lstFiguren.add(new Dame(true, counterX, counterY,"♕",100, false));
                     break;
                 case 'K'://König
-                    System.out.println(counterX+"   "+counterY);
+                    
                     lstFiguren.add(new König(true, counterX, counterY,"♔",900, true));
                     break;
                     
@@ -480,7 +480,7 @@ public class Logik {
                     lstFiguren.add(new Dame(false, counterX, counterY,"♛",100, false));
                     break;
                 case 'k'://König
-                    System.out.println(counterX+"   "+counterY);
+                    
                     lstFiguren.add(new König(false, counterX, counterY,"♚",900, true));
                     break;
             }
@@ -499,6 +499,9 @@ public class Logik {
             lstFiguren.remove(i);
         }
         lstFiguren.clear();
+    }
+    public void dbZugrecht(){
+        
     }
     
     //getter und setter
