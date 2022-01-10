@@ -250,17 +250,20 @@ public class GUI extends JFrame implements ActionListener{
             
             
             String fen = db.getNeustenFenStand();
-            if(farbe.equals("weiß")){
-                logik.listeDekodieren(logik.reverseFen(fen));
-            }else{
-                logik.listeDekodieren(fen);
-            }
+            
             zeichneHintergrund();
             zeichneFiguren();
                 
 
             if(startKoordinate != null && zielKoordinate != null){
-                
+                logik.listeDekodieren(fen);
+                if(farbe.equals("weiß")){
+                    logik.getSpielerWeiß().setAmZug(true);
+                    logik.getSpielerSchwarz().setAmZug(false);
+                }else{
+                    logik.getSpielerWeiß().setAmZug(false);
+                    logik.getSpielerSchwarz().setAmZug(true);
+                }
                 if(db.datenbankIstLeer()){
                     System.out.println("Datenbank ist leer");
                     
@@ -472,16 +475,12 @@ public class GUI extends JFrame implements ActionListener{
 
             //System.out.println(fen.getFenNotation(logik.getLstFiguren(), db.getNeustenFenStand()));
             
-            ArrayList<Figur> lst = logik.getLstFiguren();
-            //System.out.println(lst);
-            Collections.reverse(lst);
-            //System.out.println(lst);
             
-//            if(farbe.equals("weiß")){
-                db.uploadSpielstand(sp, fen.getFenNotation(lst, db.getNeustenFenStand()), farbe);
-//            }else{
-//                db.uploadSpielstand(sp, fen.getFenNotation(logik.getLstFiguren(), db.getNeustenFenStand()), farbe);
-//            }
+            if(farbe.equals("weiß")){
+                db.uploadSpielstand(sp, logik.reverseFen(fen.getFenNotation(logik.getLstFiguren(), db.getNeustenFenStand())), farbe);
+            }else{
+                db.uploadSpielstand(sp, logik.reverseFen(fen.getFenNotation(logik.getLstFiguren(), db.getNeustenFenStand())), farbe);
+            }
             
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(rootPane, ex);
@@ -499,9 +498,11 @@ public class GUI extends JFrame implements ActionListener{
             if(this.fen.getFarbeAmZug(fen).equals("w")){
                 //Sei schwarz
                 farbe = "schwarz";
+                logik.getSpielerSchwarz().setAmZug(true);
             }else{
                 //Sei weiß
                 farbe = "weiß";
+                logik.getSpielerWeiß().setAmZug(true);
             }
         }
         farbeFestgelegt = true;

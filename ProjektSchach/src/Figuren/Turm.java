@@ -17,8 +17,6 @@ public class Turm extends Figur{
         super(istWeiß, x,y, buchstabe, wert, istKönig);
     }
 
-
-
     @Override
     public ArrayList<int[]> getPossitionsAbleToMove(ArrayList<Figur> lstFiguren) {
         ArrayList<int[]> möglichePositionImNächstenZug = new ArrayList<int[]>();
@@ -45,8 +43,15 @@ public class Turm extends Figur{
         //ist x gleich?
         if(startKoordiante[0] == zielKoordiante[0]){
             anzahlFelderAufWeg = startKoordiante[1]-zielKoordiante[1];
-            for (int i = 1; i < Math.abs(anzahlFelderAufWeg); i++) {
+            for (int i = 1; i < Math.abs(anzahlFelderAufWeg)-2; i++) {
                 int[] koordinate = {startKoordiante[0],startKoordiante[1] + i};
+                if(istFeldBelegt(koordinate, lstFiguren)){
+                    istFigurImWeg = true;
+                    break;
+                }
+            }
+            for (int i = 1; i < Math.abs(anzahlFelderAufWeg)-2; i++) {
+                int[] koordinate = {startKoordiante[0],startKoordiante[1] - i};
                 if(istFeldBelegt(koordinate, lstFiguren)){
                     istFigurImWeg = true;
                     break;
@@ -55,9 +60,18 @@ public class Turm extends Figur{
         }
         else{//y gleich
             anzahlFelderAufWeg = startKoordiante[0]-zielKoordiante[0];
-            for (int i = 1; i < Math.abs(anzahlFelderAufWeg); i++) {
+            for (int i = 1; i < Math.abs(anzahlFelderAufWeg)-2; i++) {
                 
                 int[] koordinate = {startKoordiante[0]+i,startKoordiante[1]};
+                if(istFeldBelegt(koordinate, lstFiguren)){
+                    istFigurImWeg = true;
+                    break;
+                }
+                
+            }
+            for (int i = 1; i < Math.abs(anzahlFelderAufWeg)-2; i++) {
+                
+                int[] koordinate = {startKoordiante[0]-i,startKoordiante[1]};
                 if(istFeldBelegt(koordinate, lstFiguren)){
                     istFigurImWeg = true;
                     break;
@@ -68,7 +82,7 @@ public class Turm extends Figur{
         
         return istFigurImWeg;
     }
-    
+   
     public boolean istFeldBelegt(int[] zielKoordiante,ArrayList<Figur> lstFiguren){
         boolean ergebnis = false;
         for (int i = 0; i < lstFiguren.size(); i++) {
