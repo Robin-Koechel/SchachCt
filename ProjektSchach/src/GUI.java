@@ -8,8 +8,12 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Timer;
@@ -87,7 +91,17 @@ public class GUI extends JFrame implements ActionListener{
                 zeichneHintergrund();
                 
             }
-            if (action.equals("Open")) {
+            if (action.equals("show IP")) {
+                
+            try(final DatagramSocket socket = new DatagramSocket()){
+              socket.connect(InetAddress.getByName("8.8.8.8"), 10002);
+              String ip = socket.getLocalAddress().getHostAddress();
+              JOptionPane.showMessageDialog(rootPane, ip);
+            }   catch (SocketException ex) {
+                    Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (UnknownHostException ex) {
+                    Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
             if (action.equals("Refresh DB")) {
                 db = logik.getDb();
@@ -307,8 +321,8 @@ public class GUI extends JFrame implements ActionListener{
         JMenuItem newGameMenuItem = new JMenuItem("New Game");
         newGameMenuItem.setActionCommand("New Game");
 
-        JMenuItem openMenuItem = new JMenuItem("Open");
-        openMenuItem.setActionCommand("Open");
+        JMenuItem openMenuItem = new JMenuItem("show IP");
+        openMenuItem.setActionCommand("show IP");
 
         JMenuItem saveMenuItem = new JMenuItem("Refresh DB");
         saveMenuItem.setActionCommand("Refresh DB");
@@ -473,22 +487,13 @@ public class GUI extends JFrame implements ActionListener{
             zielKoordinate = null;
             startknopfGedrückt = false;
 
-            //System.out.println(fen.getFenNotation(logik.getLstFiguren(), db.getNeustenFenStand()));
-            
-            
-            if(farbe.equals("weiß")){
-                db.uploadSpielstand(sp, logik.reverseFen(fen.getFenNotation(logik.getLstFiguren(), db.getNeustenFenStand())), farbe);
-            }else{
-                db.uploadSpielstand(sp, logik.reverseFen(fen.getFenNotation(logik.getLstFiguren(), db.getNeustenFenStand())), farbe);
-            }
-            
+            db.uploadSpielstand(sp, logik.reverseFen(fen.getFenNotation(logik.getLstFiguren(), db.getNeustenFenStand())), farbe);
+
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(rootPane, ex);
             Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
 
-        
     }
     private void legeFarbeFest(){
         db = logik.getDb();
