@@ -60,10 +60,10 @@ public class Datenbank {
             return true;
         }
     }
-    public void uploadSpielstand(Spieler spieler, String value,String farbe){
+    public void uploadSpielstand(String spielerName, String value,String farbe){
         try {
             Statement statement = verbindung.createStatement();
-            statement.executeUpdate("INSERT INTO currentmatch (Spieler,Spielstand, Farbe) VALUES ('"+spieler.getName()+"' , '"+value+"', '"+farbe+"');");
+            statement.executeUpdate("INSERT INTO currentmatch (Spieler,Spielstand, Farbe) VALUES ('"+spielerName+"' , '"+value+"', '"+farbe+"');");
         } catch (SQLException ex) {
             Logger.getLogger(Datenbank.class.getName()).log(Level.SEVERE, null, ex);
         } 

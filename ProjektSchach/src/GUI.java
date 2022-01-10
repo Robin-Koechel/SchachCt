@@ -56,9 +56,9 @@ public class GUI extends JFrame implements ActionListener{
     private int[] zielKoordinate = null;
     
     //modi
-    private boolean pvp = false;
+    private boolean pvp = true;
     private boolean pve = false;
-    private boolean online = true;
+    private boolean online = false;
     
     Datenbank db;
     
@@ -66,6 +66,7 @@ public class GUI extends JFrame implements ActionListener{
     boolean farbeFestgelegt = false;
     boolean amZug = false;
     String farbe = "";
+    String name = "";
     
     
     public GUI(){
@@ -423,6 +424,12 @@ public class GUI extends JFrame implements ActionListener{
         lbl1 = new JLabel("Wie heißt du?");
         txfName = new JTextField();
         btnFertig = new JButton("fertig!");
+        btnFertig.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                name = txfName.getText();     
+            }
+        });
          
         panel.add(lbl1);
         panel.add(txfName);
@@ -487,7 +494,7 @@ public class GUI extends JFrame implements ActionListener{
             zielKoordinate = null;
             startknopfGedrückt = false;
 
-            db.uploadSpielstand(sp, logik.reverseFen(fen.getFenNotation(logik.getLstFiguren(), db.getNeustenFenStand())), farbe);
+            db.uploadSpielstand(name, logik.reverseFen(fen.getFenNotation(logik.getLstFiguren(), db.getNeustenFenStand())), farbe);
 
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(rootPane, ex);
