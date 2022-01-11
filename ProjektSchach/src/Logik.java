@@ -567,5 +567,8 @@ public class Logik {
     public Spieler getSpielerSchwarz() {
         return spielerSchwarz;
     }
+    public void setDatenbank(String ip){
+        db = new Datenbank(ip);
+    }
     
 }

@@ -86,22 +86,22 @@ public class GUI extends JFrame implements ActionListener{
             zeichneFiguren();
             
             String action = e.getActionCommand();
-            if (action.equals("New Game")) {
+            if (action.equals("Neues Spiel")) {
                 logik.logikReset();
                 zeichneFiguren();
                 zeichneHintergrund();
                 
             }
-            if (action.equals("show IP")) {
+            if (action.equals("IP anzeigen")) {
                 
-            try(final DatagramSocket socket = new DatagramSocket()){
-              socket.connect(InetAddress.getByName("8.8.8.8"), 10002);
-              String ip = socket.getLocalAddress().getHostAddress();
-              JOptionPane.showMessageDialog(rootPane, ip);
-            }   catch (SocketException ex) {
+                try(final DatagramSocket socket = new DatagramSocket()){
+                  socket.connect(InetAddress.getByName("8.8.8.8"), 10002);
+                  String ip = socket.getLocalAddress().getHostAddress();
+                  JOptionPane.showMessageDialog(rootPane, ip);
+                }   catch (SocketException ex) {
                     Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (UnknownHostException ex) {
-                    Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (UnknownHostException ex) {
+                        Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if (action.equals("Refresh DB")) {
@@ -143,6 +143,9 @@ public class GUI extends JFrame implements ActionListener{
                 pve = false;
                 online = true;
                 
+            }
+            if(action.equals("setze IP")){
+                ipPanel();
             }
             
             if(action.equals("Github")){
@@ -313,27 +316,29 @@ public class GUI extends JFrame implements ActionListener{
         JMenuBar menuBar = new JMenuBar();
 
         //create menus
-        JMenu fileMenu = new JMenu("File");
+        JMenu fileMenu = new JMenu("Datei");
         JMenu spielmodiMenu = new JMenu("Spielmodi"); 
-        JMenu aboutMenu = new JMenu("About");
         JMenu linkMenu = new JMenu("Links");
 
         //create menu items
-        JMenuItem newGameMenuItem = new JMenuItem("New Game");
-        newGameMenuItem.setActionCommand("New Game");
+        JMenuItem newGameMenuItem = new JMenuItem("Neues Spiel");
+        newGameMenuItem.setActionCommand("Neues Spiel");
 
-        JMenuItem openMenuItem = new JMenuItem("show IP");
-        openMenuItem.setActionCommand("show IP");
+        JMenuItem showIp = new JMenuItem("IP anzeigen");
+        showIp.setActionCommand("IP anzeigen");
+        
+        JMenuItem setIp = new JMenuItem("setze IP");
+        setIp.setActionCommand("setze IP");
 
-        JMenuItem saveMenuItem = new JMenuItem("Refresh DB");
-        saveMenuItem.setActionCommand("Refresh DB");
+        JMenuItem refreshDB = new JMenuItem("Refresh DB");
+        refreshDB.setActionCommand("Refresh DB");
         
         JMenuItem resetOnlineDbMenuItem = new JMenuItem("DB zurücksetzen");
         resetOnlineDbMenuItem.setActionCommand("DB zurücksetzen");
 
-        JMenuItem exitMenuItem = new JMenuItem("Exit");
-        exitMenuItem.setActionCommand("Exit");
-
+        JMenuItem exitMenuItem = new JMenuItem("Beenden");
+        exitMenuItem.setActionCommand("Beenden");
+        
 
         JMenuItem pvpMenuItem = new JMenuItem("Player vs. Player");
         pvpMenuItem.setActionCommand("Player vs. Player");
@@ -350,25 +355,29 @@ public class GUI extends JFrame implements ActionListener{
         MenuItemListener menuItemListener = new MenuItemListener();
 
         newGameMenuItem.addActionListener(menuItemListener);
-        openMenuItem.addActionListener(menuItemListener);
-        saveMenuItem.addActionListener(menuItemListener);
+        showIp.addActionListener(menuItemListener);
+        refreshDB.addActionListener(menuItemListener);
         resetOnlineDbMenuItem.addActionListener(menuItemListener);
         exitMenuItem.addActionListener(menuItemListener);
         pvpMenuItem.addActionListener(menuItemListener);
         gitMenuItem.addActionListener(menuItemListener);
         pveItem.addActionListener(menuItemListener);
         onlineMenuItem.addActionListener(menuItemListener);
-        aboutMenu.addActionListener(menuItemListener);
         linkMenu.addActionListener(menuItemListener);
+        setIp.addActionListener(menuItemListener);
         
 
         //add menu items to menus
         fileMenu.add(newGameMenuItem);
-        fileMenu.add(openMenuItem);
-        fileMenu.add(saveMenuItem);
+        fileMenu.addSeparator();
+        fileMenu.add(showIp);
+        fileMenu.add(setIp);
+        fileMenu.addSeparator();
+        fileMenu.add(refreshDB);
         fileMenu.add(resetOnlineDbMenuItem);
         fileMenu.addSeparator();
-        fileMenu.add(exitMenuItem);        
+        fileMenu.add(exitMenuItem);
+        
       
         spielmodiMenu.add(pvpMenuItem);
         spielmodiMenu.add(pveItem);
@@ -378,8 +387,7 @@ public class GUI extends JFrame implements ActionListener{
 
         //add menu to menubar
         menuBar.add(fileMenu);
-        menuBar.add(spielmodiMenu);
-        menuBar.add(aboutMenu);       
+        menuBar.add(spielmodiMenu);      
         menuBar.add(linkMenu);
 
         //add menubar to the frame
@@ -453,6 +461,13 @@ public class GUI extends JFrame implements ActionListener{
                 initComponents();
             }
         });
+    }
+    private void ipPanel(){
+        ipPanel ipPanel = new ipPanel();
+        ipPanel.setVisible(true);
+        
+        logik.setDatenbank(ipPanel.getIp());
+        System.out.println(ipPanel.getIp());
     }
     private void zeichneHintergrund() {
         for (int i = 0; i < 8; i++) {

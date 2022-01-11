@@ -24,6 +24,13 @@ public class Datenbank {
             Logger.getLogger(Datenbank.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    public Datenbank(String ip){
+        try {
+            verbindung = DriverManager.getConnection("jdbc:mysql://"+ip+":3306/schach", "root", "");
+        } catch (SQLException ex) {
+            Logger.getLogger(Datenbank.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     
     public String getNeustenFenStand(){
         ArrayList<String> listeStände = new ArrayList<>();
