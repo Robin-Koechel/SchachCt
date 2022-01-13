@@ -1,3 +1,0 @@
-#es wird immer der letzte Eintrag gelesen
-localhost
-192.168.178.48

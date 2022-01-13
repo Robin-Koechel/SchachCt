@@ -66,13 +66,16 @@ public class GUI extends JFrame implements ActionListener{
     private String name = "";
     
     private javax.swing.Timer t;
-    private boolean onlineZuende = true;
+    
+    private jsonParser json;
     
     public GUI(){
+       json = new jsonParser();
        logik = new Logik();
        
-       userInformation();
-
+       //userInformation();
+       initComponents();
+       
        startknopfGedrückt = false;
     }
     class MenuItemListener implements ActionListener {
@@ -147,7 +150,7 @@ public class GUI extends JFrame implements ActionListener{
                 
             }
             if(action.equals("setze IP")){
-                setIp();
+                logik.setupDB();
             }
             
             if(action.equals("Github")){
@@ -449,7 +452,7 @@ public class GUI extends JFrame implements ActionListener{
             @Override
             public void actionPerformed(ActionEvent e) {
                 logik.getSpielerSchwarz().setName(txfName.getText());
-                
+                System.out.println(logik.getSpielerSchwarz().getName());
                 lbl1.setVisible(false);
                 txfName.setVisible(false);
                 txfName.setEditable(false);
@@ -461,21 +464,15 @@ public class GUI extends JFrame implements ActionListener{
             }
         });
     }
-    private void setIp(){
 
-        db = logik.getDb();
-        db.setIp(logik.readIpFile());
-
-        logik.reconnectDB();
-    }
     private void zeichneHintergrund() {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j+=2) {
                 if(i%2==1){
-                    felder[i][j].setBackground(Color.decode("#5B7B65"));
+                    felder[i][j].setBackground(Color.decode(json.parseFarbe()));
                 }
                 if(i%2==0){
-                    felder[i][j+1].setBackground(Color.decode("#5B7B65"));
+                    felder[i][j+1].setBackground(Color.decode(json.parseFarbe()));
                 }
                 
             }
@@ -508,7 +505,7 @@ public class GUI extends JFrame implements ActionListener{
             zielKoordinate = null;
             startknopfGedrückt = false;
 
-            db.uploadSpielstand(name, logik.reverseFen(fen.getFenNotation(logik.getLstFiguren(), db.getNeustenFenStand())), farbe);
+            db.uploadSpielstand(logik.getSpielerSchwarz().getName(), logik.reverseFen(fen.getFenNotation(logik.getLstFiguren(), db.getNeustenFenStand())), farbe);
 
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(rootPane, ex);

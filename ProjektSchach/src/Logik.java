@@ -42,7 +42,7 @@ public class Logik {
     private int punkteSchwarz;
     
     private Datenbank db;
-    
+    private jsonParser json;
     public Logik(){  
         initFiguren();
         tempLstFiguren = lstFiguren;
@@ -52,8 +52,10 @@ public class Logik {
         
         punkteSchwarz = 0;
         punkteWeiß = 0;
+        json = new jsonParser();
         
-        db = new Datenbank();
+        setupDB();
+        
     }
     //wichtige Methoden
     public void zugSetzen(int[]startKoordinate,int[]zielKoordinate, ArrayList<Figur> lstFiguren)throws Exception{
@@ -513,24 +515,13 @@ public class Logik {
         
         return res;
     }
-    public void reconnectDB(){
-        db = new Datenbank();
-    }
-    public String readIpFile(){
-        String res = "";
-        try {
-            File file = new File("ip-Adresse.txt");
-            Scanner reader = new Scanner(file);
-            while (reader.hasNextLine()) {
-                String data = reader.nextLine();
-                res = data;
-                System.out.println("Ip: "+data);
-            }
-            reader.close();
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(Logik.class.getName()).log(Level.SEVERE, null, ex);
+    public void setupDB(){
+        int reply = JOptionPane.showConfirmDialog(null, "Yes-localhost\nNo-fremd Ip", "", JOptionPane.YES_NO_OPTION);
+        if (reply == JOptionPane.YES_OPTION) {
+            db = new Datenbank(json.parseDefaultIp());
+        } else {
+            db = new Datenbank(json.parseIp());
         }
-        return res;
     }
     
     //getter und setter

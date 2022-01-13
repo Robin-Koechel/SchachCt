@@ -16,9 +16,8 @@ import java.util.logging.Logger;
  */
 public class Datenbank {
     private Connection verbindung;
-    private String ip = "localhost";
     
-    public Datenbank(){
+    public Datenbank(String ip){
         try {
             verbindung = DriverManager.getConnection("jdbc:mysql://"+ip+":3306/schach", "root", "");
             System.out.println("Datenbank erfolgreich verbunden");
@@ -111,8 +110,5 @@ public class Datenbank {
             Logger.getLogger(Datenbank.class.getName()).log(Level.SEVERE, null, ex);
         }
         return res;
-    }
-    public void setIp(String ip){
-        this.ip = ip;
     }
 }
