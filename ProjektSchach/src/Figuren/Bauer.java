@@ -39,6 +39,15 @@ public class Bauer extends Figur{
                         möglichePositionImNächstenZug.add(new int[]{lstFiguren.get(i).getPosX(), lstFiguren.get(i).getPosY()});
                     }
                 }
+                if((lstFiguren.get(i).getPosX() == getPosX()+1 && 
+                    lstFiguren.get(i).getPosY() == getPosY()-1) || 
+                    (lstFiguren.get(i).getPosX() == getPosX()-1 && 
+                    lstFiguren.get(i).getPosY() == getPosY()-1)) {
+                    
+                    if(lstFiguren.get(i).istWeiß()){
+                        möglichePositionImNächstenZug.add(new int[]{lstFiguren.get(i).getPosX(), lstFiguren.get(i).getPosY()});
+                    }
+                }
             }
             //gegenüberliegende nicht schlagen
             for (int i = 0; i < lstFiguren.size(); i++) {

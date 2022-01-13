@@ -16,17 +16,12 @@ import java.util.logging.Logger;
  */
 public class Datenbank {
     private Connection verbindung;
+    private String ip = "localhost";
     
     public Datenbank(){
         try {
-            verbindung = DriverManager.getConnection("jdbc:mysql://localhost:3306/schach", "root", "");
-        } catch (SQLException ex) {
-            Logger.getLogger(Datenbank.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    public Datenbank(String ip){
-        try {
             verbindung = DriverManager.getConnection("jdbc:mysql://"+ip+":3306/schach", "root", "");
+            System.out.println("Datenbank erfolgreich verbunden");
         } catch (SQLException ex) {
             Logger.getLogger(Datenbank.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -117,5 +112,7 @@ public class Datenbank {
         }
         return res;
     }
-        
+    public void setIp(String ip){
+        this.ip = ip;
+    }
 }

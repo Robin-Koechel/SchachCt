@@ -2,7 +2,6 @@ import Figuren.Figur;
 import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -15,9 +14,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Timer;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BoxLayout;
@@ -49,6 +45,7 @@ public class GUI extends JFrame implements ActionListener{
     
     //logik
     private Logik logik;
+
     
     //button input
     private boolean startknopfGedrückt;
@@ -60,23 +57,22 @@ public class GUI extends JFrame implements ActionListener{
     private boolean pve = false;
     private boolean online = false;
     
-    Datenbank db;
+    private Datenbank db;
     
-    FenNotation fen = new FenNotation();
+    private FenNotation fen = new FenNotation();
     boolean farbeFestgelegt = false;
     boolean amZug = false;
-    String farbe = "";
-    String name = "";
+    private String farbe = "";
+    private String name = "";
     
+    private javax.swing.Timer t;
+    private boolean onlineZuende = true;
     
     public GUI(){
        logik = new Logik();
        
        userInformation();
-       //initComponents();
-       
-       //System.out.println(fen.getFenNotation(logik.getLstFiguren(), "TPLKQLPT/BBBBBBBB/00000000/00000000/00000000/00000000/bbbbbbbb/tplkqlpt-b-0"));
-       
+
        startknopfGedrückt = false;
     }
     class MenuItemListener implements ActionListener {
@@ -113,10 +109,11 @@ public class GUI extends JFrame implements ActionListener{
                 zeichneHintergrund();
                 zeichneFiguren();
             }
-            if (action.equals("Exit")) {
+            if (action.equals("Beenden")) {
                 System.exit(1);
             }
             if (action.equals("Player vs. Player")) {
+                stopTimer();
                 logik.logikReset();
                 zeichneFiguren();
                 zeichneHintergrund();
@@ -126,6 +123,7 @@ public class GUI extends JFrame implements ActionListener{
                 online = false;
             }
             if (action.equals("Player vs. AI")) {
+                stopTimer();
                 logik.logikReset();
                 zeichneFiguren();
                 zeichneHintergrund();
@@ -139,13 +137,17 @@ public class GUI extends JFrame implements ActionListener{
                 zeichneFiguren();
                 zeichneHintergrund();
                 
+                //initTimer();
+                //startTimer();
+                //t.setRepeats(true);
+                
                 pvp = false;
                 pve = false;
                 online = true;
                 
             }
             if(action.equals("setze IP")){
-                ipPanel();
+                setIp();
             }
             
             if(action.equals("Github")){
@@ -263,12 +265,9 @@ public class GUI extends JFrame implements ActionListener{
         }
         if(online){
             db = logik.getDb();
-            legeFarbeFest();
-                 
-            
-            
             String fen = db.getNeustenFenStand();
             
+            legeFarbeFest();
             zeichneHintergrund();
             zeichneFiguren();
                 
@@ -462,12 +461,12 @@ public class GUI extends JFrame implements ActionListener{
             }
         });
     }
-    private void ipPanel(){
-        ipPanel ipPanel = new ipPanel();
-        ipPanel.setVisible(true);
-        
-        logik.setDatenbank(ipPanel.getIp());
-        System.out.println(ipPanel.getIp());
+    private void setIp(){
+
+        db = logik.getDb();
+        db.setIp(logik.readIpFile());
+
+        logik.reconnectDB();
     }
     private void zeichneHintergrund() {
         for (int i = 0; i < 8; i++) {
@@ -533,5 +532,26 @@ public class GUI extends JFrame implements ActionListener{
             }
         }
         farbeFestgelegt = true;
+    }
+    //Timer
+    private void initTimer(){
+        t = new javax.swing.Timer(4000, new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+                db = logik.getDb();
+                String fen = db.getNeustenFenStand();
+
+                logik.listeDekodieren(fen);
+                zeichneHintergrund();
+                zeichneFiguren();
+            }
+        });
+        
+    }
+    private void startTimer(){
+        t.start();
+    }
+    private void stopTimer(){
+        t.stop();
     }
 }

@@ -6,9 +6,12 @@ import Figuren.König;
 import Figuren.Läufer;
 import Figuren.Springer;
 import Figuren.Turm;
+import java.io.File;
+import java.io.FileNotFoundException;
 import static java.lang.Math.max;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -510,6 +513,25 @@ public class Logik {
         
         return res;
     }
+    public void reconnectDB(){
+        db = new Datenbank();
+    }
+    public String readIpFile(){
+        String res = "";
+        try {
+            File file = new File("ip-Adresse.txt");
+            Scanner reader = new Scanner(file);
+            while (reader.hasNextLine()) {
+                String data = reader.nextLine();
+                res = data;
+                System.out.println("Ip: "+data);
+            }
+            reader.close();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Logik.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return res;
+    }
     
     //getter und setter
     public ArrayList getPossibleMoves(boolean istSeiteWeiß){
@@ -566,9 +588,5 @@ public class Logik {
     }
     public Spieler getSpielerSchwarz() {
         return spielerSchwarz;
-    }
-    public void setDatenbank(String ip){
-        db = new Datenbank(ip);
-    }
-    
+    }    
 }
