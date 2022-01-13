@@ -43,14 +43,14 @@ public class Turm extends Figur{
         //ist x gleich?
         if(startKoordiante[0] == zielKoordiante[0]){
             anzahlFelderAufWeg = startKoordiante[1]-zielKoordiante[1];
-            for (int i = 1; i < Math.abs(anzahlFelderAufWeg)-2; i++) {
+            for (int i = 1; i < Math.abs(anzahlFelderAufWeg); i++) {
                 int[] koordinate = {startKoordiante[0],startKoordiante[1] + i};
                 if(istFeldBelegt(koordinate, lstFiguren)){
                     istFigurImWeg = true;
                     break;
                 }
             }
-            for (int i = 1; i < Math.abs(anzahlFelderAufWeg)-2; i++) {
+            for (int i = 1; i < Math.abs(anzahlFelderAufWeg); i++) {
                 int[] koordinate = {startKoordiante[0],startKoordiante[1] - i};
                 if(istFeldBelegt(koordinate, lstFiguren)){
                     istFigurImWeg = true;
@@ -60,7 +60,7 @@ public class Turm extends Figur{
         }
         else{//y gleich
             anzahlFelderAufWeg = startKoordiante[0]-zielKoordiante[0];
-            for (int i = 1; i < Math.abs(anzahlFelderAufWeg)-2; i++) {
+            for (int i = 1; i < Math.abs(anzahlFelderAufWeg); i++) {
                 
                 int[] koordinate = {startKoordiante[0]+i,startKoordiante[1]};
                 if(istFeldBelegt(koordinate, lstFiguren)){
@@ -69,7 +69,7 @@ public class Turm extends Figur{
                 }
                 
             }
-            for (int i = 1; i < Math.abs(anzahlFelderAufWeg)-2; i++) {
+            for (int i = 1; i < Math.abs(anzahlFelderAufWeg); i++) {
                 
                 int[] koordinate = {startKoordiante[0]-i,startKoordiante[1]};
                 if(istFeldBelegt(koordinate, lstFiguren)){

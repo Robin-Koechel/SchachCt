@@ -25,8 +25,10 @@ public class Bauer extends Figur{
             //nächstes mögliches Feld finden
             if(getAnzahlGesetzt()==0){
                 möglichePositionImNächstenZug.add(new int[]{getPosX(),getPosY()+2});
+                möglichePositionImNächstenZug.add(new int[]{getPosX(),getPosY()-2});
             }
             möglichePositionImNächstenZug.add(new int[]{getPosX(),getPosY()+1});
+            möglichePositionImNächstenZug.add(new int[]{getPosX(),getPosY()-1});
             
             //schräg schlagen
             for (int i = 0; i < lstFiguren.size(); i++) {
@@ -44,7 +46,7 @@ public class Bauer extends Figur{
                     (lstFiguren.get(i).getPosX() == getPosX()-1 && 
                     lstFiguren.get(i).getPosY() == getPosY()-1)) {
                     
-                    if(lstFiguren.get(i).istWeiß()){
+                    if(!lstFiguren.get(i).istWeiß()){
                         möglichePositionImNächstenZug.add(new int[]{lstFiguren.get(i).getPosX(), lstFiguren.get(i).getPosY()});
                     }
                 }
@@ -53,6 +55,17 @@ public class Bauer extends Figur{
             for (int i = 0; i < lstFiguren.size(); i++) {
                 if(lstFiguren.get(i).getPosX() == getPosX() &&
                    lstFiguren.get(i).getPosY() == getPosY()+1){
+                    if(!lstFiguren.get(i).istWeiß()){
+                        for (int j = 0; j < möglichePositionImNächstenZug.size(); j++) {
+                            if(möglichePositionImNächstenZug.get(j)[0] == lstFiguren.get(i).getPosX() &&
+                                möglichePositionImNächstenZug.get(j)[1] == lstFiguren.get(i).getPosY()){
+                                möglichePositionImNächstenZug.remove(j);
+                            }
+                        }
+                    }
+                }
+                if(lstFiguren.get(i).getPosX() == getPosX() &&
+                   lstFiguren.get(i).getPosY() == getPosY()-1){
                     if(!lstFiguren.get(i).istWeiß()){
                         for (int j = 0; j < möglichePositionImNächstenZug.size(); j++) {
                             if(möglichePositionImNächstenZug.get(j)[0] == lstFiguren.get(i).getPosX() &&

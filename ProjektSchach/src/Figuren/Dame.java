@@ -45,19 +45,27 @@ public class Dame extends Figur{
         boolean istFigurImWeg = false;
         int anzahlFelderAufWeg;
         //ist x gleich?
+        anzahlFelderAufWeg = startKoordiante[1]-zielKoordiante[1]-1;
         if(startKoordiante[0] == zielKoordiante[0]){
-            anzahlFelderAufWeg = startKoordiante[1]-zielKoordiante[1];
-            for (int i = 1; i < Math.abs(anzahlFelderAufWeg); i++) {
+            
+            for (int i = 1; i < Math.abs(anzahlFelderAufWeg)-2; i++) {
                 int[] koordinate = {startKoordiante[0],startKoordiante[1] + i};
                 if(istFeldBelegt(koordinate, lstFiguren)){
                     istFigurImWeg = true;
                     break;
                 }
             }
+            for (int i = 1; i < Math.abs(anzahlFelderAufWeg)-2; i++) {
+                int[] koordinate = {startKoordiante[0],startKoordiante[1] - i};
+                if(istFeldBelegt(koordinate, lstFiguren)){
+                    istFigurImWeg = true;
+                    break;
+                }
+            }
         }
-        else if(startKoordiante[1] == zielKoordiante[1]){//y gleich
+        else {//y gleich
             anzahlFelderAufWeg = startKoordiante[0]-zielKoordiante[0];
-            for (int i = 1; i < Math.abs(anzahlFelderAufWeg); i++) {
+            for (int i = 1; i < Math.abs(anzahlFelderAufWeg)-2; i++) {
                 
                 int[] koordinate = {startKoordiante[0]+i,startKoordiante[1]};
                 if(istFeldBelegt(koordinate, lstFiguren)){
@@ -66,9 +74,44 @@ public class Dame extends Figur{
                 }
                 
             }
+            for (int i = 1; i < Math.abs(anzahlFelderAufWeg)-2; i++) {
+                
+                int[] koordinate = {startKoordiante[0]-i,startKoordiante[1]};
+                if(istFeldBelegt(koordinate, lstFiguren)){
+                    istFigurImWeg = true;
+                    break;
+                }
+                
+            }
         }
-        else{
-            anzahlFelderAufWeg = startKoordiante[1]-zielKoordiante[1];
+        if(startKoordiante[0]>zielKoordiante[0] && startKoordiante[1]>zielKoordiante[1]){
+            for (int i = 1; i < Math.abs(anzahlFelderAufWeg); i++) {
+                int[] koordinate = {startKoordiante[0]-i,startKoordiante[1] - i};
+                if(istFeldBelegt(koordinate, lstFiguren)){
+                    istFigurImWeg = true;
+                    break;
+                }
+            }
+        }
+        if(startKoordiante[0]>zielKoordiante[0] && startKoordiante[1]<zielKoordiante[1]){
+            for (int i = 1; i < Math.abs(anzahlFelderAufWeg); i++) {
+                int[] koordinate = {startKoordiante[0]+i,startKoordiante[1] + i};
+                if(istFeldBelegt(koordinate, lstFiguren)){
+                    istFigurImWeg = true;
+                    break;
+                }
+            }
+        }
+        if(startKoordiante[0]<zielKoordiante[0] && startKoordiante[1]>zielKoordiante[1]){
+            for (int i = 1; i < Math.abs(anzahlFelderAufWeg); i++) {
+                int[] koordinate = {startKoordiante[0]+i,startKoordiante[1] - i};
+                if(istFeldBelegt(koordinate, lstFiguren)){
+                    istFigurImWeg = true;
+                    break;
+                }
+            }
+        }
+        if(startKoordiante[0]>zielKoordiante[0] && startKoordiante[1]>zielKoordiante[1]){
             for (int i = 1; i < Math.abs(anzahlFelderAufWeg); i++) {
                 int[] koordinate = {startKoordiante[0]+i,startKoordiante[1] + i};
                 if(istFeldBelegt(koordinate, lstFiguren)){
