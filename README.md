@@ -32,10 +32,3 @@ Schritt 3: Oberfläche
 
 	In der setting.json Datei kann man zusätzlich auch noch Farbe des Spielfeldes nach seinen eigenen
 	Präferenzen verändern.
-
-	#################################################################################
-	# 										#
-	# Falls einem Fehler auffallen (Vor allem bei der Bewegung der Figuren) 	#
-	# darf man die Devs gerne darauf aufmerksam machen :)				#
-	# 										#
-	#################################################################################
